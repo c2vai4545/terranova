@@ -1,0 +1,102 @@
+body {
+    background-color: #E6E6DD;
+}
+
+footer {
+    width: 100%;
+    bottom: 0;
+    position: fixed;
+}
+
+h1 {
+    color: darkolivegreen;
+    font-family: 'Century Gothic';
+    letter-spacing: 2px;
+    font-size: 45px;
+    margin-left: 5px;
+    padding: 10px;
+}
+
+h2 {
+    color: darkolivegreen;
+    font-family: 'Century Gothic';
+}
+
+h3 {
+    color: darkolivegreen;
+    font-family: 'Century Gothic';
+}
+
+.btn-iniciar-sesion {
+    background-color: darkolivegreen;
+}
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+}
+
+.image-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    position: center;
+    
+}
+
+.card {
+    padding: 30px;
+}
+
+.logo1 {
+    display: block;
+    margin: 0 auto;
+}
+
+.logo2 {
+    display: block;
+    margin: auto;
+}
+
+.list-group-horizontal {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.list-group-item {
+    flex: 1;
+    text-align: center;
+    border-radius: 0;
+}
+
+.list-group-item a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+}
+
+.btn-primario {
+    background-color: darkolivegreen;
+}
+
+.btn-mostrar {
+    background-color: darkolivegreen;
+}
