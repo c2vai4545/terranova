@@ -53,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$alerta) {
         // Conexión a la base de datos
-        $host = 'localhost';
-        $dbname = 'id20883033_terranova';
-        $username = 'id20883033_c2vai4545';
-        $password = 'NacionalPUQ1899!';
+        $host = "DIRECCION DEL HOST QUITADO POR SEGURIDAD";
+        $dbname = "NOMBRE DE BASE DE DATOS QUITADO POR SEGURIDAD";
+        $username = "USUARIO DE HOST QUITADO POR SEGURIDAD";
+        $password = "CONTRASENA DE HOST QUITADO POR SEGURIDAD";
 
         try {
             $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
