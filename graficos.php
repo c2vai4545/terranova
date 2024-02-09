@@ -138,10 +138,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     function obtenerNombreTipoLectura($idTipoLectura)
     {
         // Obtener el nombre del tipo de lectura desde la base de datos o cualquier otra fuente de datos
-        $servername = "localhost";
-        $username = "id20883033_c2vai4545";
-        $password = "NacionalPUQ1899!";
-        $dbname = "id20883033_terranova";
+        $servername = "DIRECCION DEL HOST QUITADO POR SEGURIDAD";
+        $username = "USUARIO DE HOST QUITADO POR SEGURIDAD";
+        $password = "CONTRASENA DE HOST QUITADO POR SEGURIDAD";
+        $dbname = "NOMBRE DE BASE DE DATOS QUITADO POR SEGURIDAD";
 
         // Crear la conexión a la base de datos
         $conn = new mysqli($servername, $username, $password, $dbname);
