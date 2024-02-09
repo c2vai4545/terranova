@@ -23,3 +23,9 @@ El acceso a los dos perfiles sera:
                               - Mi Cuenta: donde tendran acceso a cambiar la contraseña por una nueva que el usuario elija.
 
 La pagina esta escrita en PHP mientras que se implemento Bootstrap y una hoja de estilos para personalizar mas algunas cosas.
+
+Pagina real del proyecto: https://terranovagreenpuq.000webhostapp.com
+
+Cuebta de prueba de trabajador: 
+  RUT: 00000001
+  Pass: Terranova.2023
