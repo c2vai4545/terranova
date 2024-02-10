@@ -26,6 +26,6 @@ La pagina esta escrita en PHP mientras que se implemento Bootstrap y una hoja de
 
 Pagina real del proyecto: https://terranovagreenpuq.000webhostapp.com
 
-Cuebta de prueba de trabajador: 
+Cuenta de prueba de trabajador: 
   RUT: 00000001
   Pass: Terranova.2023
