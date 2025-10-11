@@ -77,9 +77,12 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
 
 ## Flujo de datos de sensores
 
-1) Microcontrolador → `datosdb.php` (POST: `temp`, `humAir`, `humSue`).
-2) `datosdb.php` actualiza `Temporal` y, si corresponde (≥ 2 h), inserta en `Lectura` por tipo.
-3) UI de Monitoreo consulta `monitoreo_ajax.php` cada 5 s → actualiza DOM.
+1) Microcontrolador → `POST /ingesta`.
+   - Acepta `application/json`:
+     - `{ "temp": number, "humAir": number, "humSue": number }`
+   - Alternativamente `application/x-www-form-urlencoded` con campos `temp`, `humAir`, `humSue`.
+2) El backend actualiza `Temporal` y, si corresponde (≥ 2 h), inserta en `Lectura` por tipo (1=temp, 2=hum aire, 3=hum suelo).
+3) UI de Monitoreo consulta `GET /monitor/data` cada 5 s → actualiza DOM.
 4) Histórico consulta `Lectura` por rango y tipos seleccionados.
 
 ## Requisitos
@@ -90,7 +93,12 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
 
 ## Configuración
 
-Las credenciales de base de datos están parametrizadas directamente en los scripts (marcadores “QUITADO POR SEGURIDAD”). Debe editarse cada archivo que realiza conexión a BD y establecer `host`, `dbname`, `username`, `password`:
+Plantilla de configuración privada:
+- Copie `app/Config/config.php.example` a `app/Config/config.local.php` y complete sus credenciales.
+- `app/Config/config.local.php` está en `.gitignore` y no se versiona.
+- Si no existe `config.local.php`, se usará `app/Config/config.php`.
+
+Para la versión original (sin front-controller), las credenciales están embebidas en los scripts (marcadores “QUITADO POR SEGURIDAD”). Debe editarse cada archivo que realiza conexión a BD y establecer `host`, `dbname`, `username`, `password`:
 
 - `login.php`
 - `monitoreo.php`
@@ -116,9 +124,17 @@ Sugerencia: centralizar credenciales en un archivo de configuración común e in
 
 ## Despliegue y ejecución local
 
+Opción A (estructura original PHP):
 1) Crear base de datos y tablas según el esquema deducido arriba.
 2) Configurar credenciales en los archivos PHP listados.
-3) Servir el proyecto con PHP o un servidor web (Apache/Nginx). Con PHP embebido: ejecutar en la raíz del proyecto y abrir `http://localhost:8000/`.
+3) Servir el proyecto mediante Apache/Nginx apuntando a la raíz actual.
+
+Opción B (front-controller en `public/`):
+1) Crear base de datos y tablas según el esquema deducido arriba.
+2) Configurar credenciales en `app/Config/config.php`.
+3) Levantar PHP embebido usando el router (para servir `/estilos.css` e imágenes):
+   - `php -S localhost:8000 public/index.php`
+4) Acceder a `http://localhost:8000/`.
 
 ## Seguridad y consideraciones
 
@@ -140,7 +156,7 @@ Sugerencia: centralizar credenciales en un archivo de configuración común e in
 
 ## Sitio del proyecto
 
-- `https://terranovagreenpuq.000webhostapp.com`
+No disponible actualmente.
 
 ## Estructura de archivos (principal)
 

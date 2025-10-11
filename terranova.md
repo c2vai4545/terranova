@@ -242,4 +242,4 @@ Este documento describe con precisión el comportamiento del sistema actual (PHP
 - Cuenta de prueba:
   - RUT: `00000001`
   - Pass: `Terranova.2023`
-- Sitio del proyecto: `https://terranovagreenpuq.000webhostapp.com`
+- Sitio del proyecto: No disponible actualmente.
