@@ -1,0 +1,6 @@
+app/Config/config.local.php
+.env
+vendor/
+node_modules/
+*.log
+

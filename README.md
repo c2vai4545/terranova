@@ -90,7 +90,12 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
 
 ## Configuración
 
-Las credenciales de base de datos están parametrizadas directamente en los scripts (marcadores “QUITADO POR SEGURIDAD”). Debe editarse cada archivo que realiza conexión a BD y establecer `host`, `dbname`, `username`, `password`:
+Plantilla de configuración privada:
+- Copie `app/Config/config.php.example` a `app/Config/config.local.php` y complete sus credenciales.
+- `app/Config/config.local.php` está en `.gitignore` y no se versiona.
+- Si no existe `config.local.php`, se usará `app/Config/config.php`.
+
+Para la versión original (sin front-controller), las credenciales están embebidas en los scripts (marcadores “QUITADO POR SEGURIDAD”). Debe editarse cada archivo que realiza conexión a BD y establecer `host`, `dbname`, `username`, `password`:
 
 - `login.php`
 - `monitoreo.php`
@@ -116,9 +121,17 @@ Sugerencia: centralizar credenciales en un archivo de configuración común e in
 
 ## Despliegue y ejecución local
 
+Opción A (estructura original PHP):
 1) Crear base de datos y tablas según el esquema deducido arriba.
 2) Configurar credenciales en los archivos PHP listados.
-3) Servir el proyecto con PHP o un servidor web (Apache/Nginx). Con PHP embebido: ejecutar en la raíz del proyecto y abrir `http://localhost:8000/`.
+3) Servir el proyecto mediante Apache/Nginx apuntando a la raíz actual.
+
+Opción B (front-controller en `public/`):
+1) Crear base de datos y tablas según el esquema deducido arriba.
+2) Configurar credenciales en `app/Config/config.php`.
+3) Levantar PHP embebido desde `public/`:
+   - `php -S localhost:8000 -t public`
+4) Acceder a `http://localhost:8000/`.
 
 ## Seguridad y consideraciones
 
@@ -140,7 +153,7 @@ Sugerencia: centralizar credenciales en un archivo de configuración común e in
 
 ## Sitio del proyecto
 
-- `https://terranovagreenpuq.000webhostapp.com`
+No disponible actualmente.
 
 ## Estructura de archivos (principal)
 
