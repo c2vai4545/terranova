@@ -6,6 +6,10 @@ footer {
     width: 100%;
     bottom: 0;
     position: fixed;
+    display: flex;
+    /* centrar contenido del footer */
+    flex-direction: column;
+    align-items: center;
 }
 
 h1 {
@@ -13,8 +17,10 @@ h1 {
     font-family: 'Century Gothic';
     letter-spacing: 2px;
     font-size: 45px;
-    margin-left: 5px;
-    padding: 10px;
+    text-align: center;
+    /* centrar título en home */
+    margin: 10px 0;
+    /* margen vertical uniforme */
 }
 
 h2 {
@@ -58,7 +64,7 @@ h3 {
     margin-right: auto;
     margin-left: auto;
     position: center;
-    
+
 }
 
 .card {
@@ -72,19 +78,58 @@ h3 {
 
 .logo2 {
     display: block;
-    margin: auto;
+    margin-left: auto;
+    /* centrar logo footer */
+    margin-right: auto;
+}
+
+/* Centrar contenido del footer del home */
+.piepag .footer {
+    text-align: center;
+    padding: 12px 0;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.piepag .footer-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 8px;
+    display: flex;
+    justify-content: center;
+}
+
+.piepag .footer-copy {
+    margin: 0;
+    color: #6c757d;
+    text-align: center;
 }
 
 .list-group-horizontal {
     display: flex;
+    flex-wrap: wrap;
+    /* permite varias filas en pantallas chicas */
     justify-content: center;
+    align-items: stretch;
+    /* iguala la altura al elemento más alto */
     padding: 0;
+    gap: 12px;
+    /* separación uniforme */
 }
 
 .list-group-item {
-    flex: 1;
+    flex: 0 0 260px;
+    /* ANCHO FIJO IGUAL PARA TODOS */
     text-align: center;
     border-radius: 0;
+    display: flex;
+    /* para que el botón pueda estirarse a 100% */
 }
 
 .list-group-item a {
@@ -92,6 +137,40 @@ h3 {
     padding: 10px;
     text-decoration: none;
 }
+
+/* Fuerza que todos los botones ocupen el ancho completo de su columna */
+.list-group-item .btn {
+    display: flex;
+    width: 100%;
+    height: 80px;
+    /* altura fija original */
+    align-items: center;
+    justify-content: center;
+    white-space: normal;
+    /* permitir múltiples líneas */
+    box-sizing: border-box;
+    padding: 12px 16px;
+}
+
+/* Opcional: altura mínima uniforme de botones para mismo tamaño visual */
+.list-group-item .btn.btn-primario {
+    min-height: 80px;
+}
+
+/* Asegura que el contenedor no agregue padding extra que rompa la alineación */
+.list-group.list-group-horizontal .list-group-item {
+    display: flex;
+    padding: 0;
+    margin: 0;
+    /* el gap se maneja en el contenedor */
+    box-sizing: border-box;
+    flex: 0 0 260px !important;
+    /* mismo ancho para todos, domina a .flex-fill */
+}
+
+/* Opcional: si quieres un ancho fijo para cada columna, descomenta:
+   .list-group.list-group-horizontal .list-group-item { flex: 0 0 180px; }
+*/
 
 .btn-primario {
     background-color: darkolivegreen;
