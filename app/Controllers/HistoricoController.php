@@ -15,10 +15,16 @@ class HistoricoController
         $fechaFin = $_POST['fechaFin'] ?? '';
         $tipos = $_POST['tiposLectura'] ?? [];
         $lecturas = [];
+        // Mapa idTipoLectura => nombre (para títulos/leyendas claras)
+        $tiposMap = [];
+        foreach (TipoLecturaModel::listAll() as $t) {
+            $tiposMap[(int)$t['idTipoLectura']] = $t['nombre'];
+        }
         foreach ($tipos as $idTipo) {
             $data = LecturaModel::getByTipoAndRango((int)$idTipo, $fechaInicio, $fechaFin);
             $lecturas[] = [
                 'tipoLectura' => (int)$idTipo,
+                'tipoNombre' => $tiposMap[(int)$idTipo] ?? ('Tipo ' . (int)$idTipo),
                 'data' => $data,
             ];
         }

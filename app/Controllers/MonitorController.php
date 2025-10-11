@@ -25,9 +25,21 @@ class MonitorController
 
     public function ingesta(): void
     {
-        $temp = (float)($_POST['temp'] ?? 0);
-        $humSue = (float)($_POST['humSue'] ?? 0);
-        $humAir = (float)($_POST['humAir'] ?? 0);
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $payload = [];
+        if (stripos($contentType, 'application/json') !== false) {
+            $raw = file_get_contents('php://input');
+            $decoded = json_decode($raw, true);
+            if (is_array($decoded)) {
+                $payload = $decoded;
+            }
+        } else {
+            $payload = $_POST;
+        }
+
+        $temp = isset($payload['temp']) ? (float)$payload['temp'] : 0.0;
+        $humSue = isset($payload['humSue']) ? (float)$payload['humSue'] : 0.0;
+        $humAir = isset($payload['humAir']) ? (float)$payload['humAir'] : 0.0;
 
         try {
             TemporalModel::truncateAndInsert($temp, $humAir, $humSue);

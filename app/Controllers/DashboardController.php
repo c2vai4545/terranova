@@ -7,7 +7,8 @@ class DashboardController
         if ((string)($_SESSION['idPerfil'] ?? '') !== '1') {
             redirect('/');
         }
-        view('dashboard/admin');
+        $nombre = UsuarioModel::getNombreCorto((string)$_SESSION['rut']);
+        view('dashboard/admin', ['nombre' => $nombre]);
     }
 
     public function worker(): void
@@ -16,6 +17,7 @@ class DashboardController
         if ((string)($_SESSION['idPerfil'] ?? '') !== '2') {
             redirect('/');
         }
-        view('dashboard/worker');
+        $nombre = UsuarioModel::getNombreCorto((string)$_SESSION['rut']);
+        view('dashboard/worker', ['nombre' => $nombre]);
     }
 }

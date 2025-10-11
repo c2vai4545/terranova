@@ -27,7 +27,7 @@ class UsuarioController
             $stmt = $pdo->prepare('SELECT contraseña FROM Usuario WHERE rut = :rut');
             $stmt->execute([':rut' => $usuario['rut']]);
             $row = $stmt->fetch();
-            if ($row && $row['contraseña'] === $nueva) {
+            if ($row && password_verify($nueva, $row['contraseña'])) {
                 view('usuario/mi_cuenta', ['mensaje' => 'La nueva contraseña no puede ser igual a la contraseña actual']);
                 return;
             }
@@ -35,8 +35,9 @@ class UsuarioController
                 view('usuario/mi_cuenta', ['mensaje' => 'La nueva contraseña supera la longitud máxima permitida']);
                 return;
             }
+            $hash = password_hash($nueva, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare('UPDATE Usuario SET contraseña = :p WHERE rut = :rut');
-            $stmt->execute([':p' => $nueva, ':rut' => $usuario['rut']]);
+            $stmt->execute([':p' => $hash, ':rut' => $usuario['rut']]);
             redirect('/logout');
         } else {
             view('usuario/mi_cuenta', ['mensaje' => 'Usuario no encontrado']);

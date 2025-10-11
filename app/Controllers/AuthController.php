@@ -3,7 +3,7 @@ class AuthController
 {
     public function landing(): void
     {
-        redirect('/login');
+        view('home/landing');
     }
 
     public function showLogin(): void
@@ -27,16 +27,16 @@ class AuthController
             view('auth/login', ['error' => 'Credenciales inválidas.']);
             return;
         }
-        $user = UsuarioModel::findByRutAndPassword($rut, $pass);
-        if (!$user) {
+        $auth = UsuarioModel::findAuthByRut($rut);
+        if (!$auth || !password_verify($pass, $auth['contraseña'])) {
             view('auth/login', ['error' => 'Usuario o contraseña incorrectos.']);
             return;
         }
-        $_SESSION['rut'] = $user['rut'];
-        $_SESSION['idPerfil'] = (string)$user['idPerfil'];
-        if ((string)$user['idPerfil'] === '1') {
+        $_SESSION['rut'] = $auth['rut'];
+        $_SESSION['idPerfil'] = (string)$auth['idPerfil'];
+        if ((string)$auth['idPerfil'] === '1') {
             redirect('/admin');
-        } elseif ((string)$user['idPerfil'] === '2') {
+        } elseif ((string)$auth['idPerfil'] === '2') {
             redirect('/worker');
         } else {
             redirect('/');

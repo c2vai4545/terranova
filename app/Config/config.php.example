@@ -1,6 +1,6 @@
 <?php
 // Copie este archivo a config.local.php y complete sus credenciales reales
-date_default_timezone_set('America/Punta_Arenas');
+date_default_timezone_set('America/Montevideo');
 
 return [
     'db' => [

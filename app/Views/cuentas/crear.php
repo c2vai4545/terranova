@@ -1,9 +1,6 @@
-<h1 class="text-center">Crear Cuenta</h1>
-<?php if (!empty($error ?? '')): ?>
-    <div class="alert alert-danger text-center"><?php echo htmlspecialchars($error); ?></div>
-<?php endif; ?>
-<div class="card">
-    <div class="card-body">
+<div class="wrapper">
+    <h1 class="text-center">Crear Cuenta</h1>
+    <div class="card">
         <form method="POST" action="/cuentas/crear">
             <div class="row mb-2">
                 <label class="col-sm-5">RUT sin dígito verificador:</label>
@@ -37,8 +34,9 @@
                 </div>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-dark">Guardar</button>
-                <a href="/cuentas" class="btn btn-secondary">Volver</a>
+                <hr />
+                <button type="submit" class="btn btn-dark btn-primario mt-2">Guardar</button>
+                <a href="/cuentas" class="btn btn-secondary btn-volver mt-2">Volver</a>
             </div>
         </form>
     </div>

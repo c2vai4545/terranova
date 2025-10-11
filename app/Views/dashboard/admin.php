@@ -1,8 +1,23 @@
-<h2 class="text-center">Panel de Administrador</h2>
-<div class="d-grid gap-2 col-6 mx-auto">
-    <a href="/historico" class="btn btn-dark">Ver Histórico</a>
-    <a href="/monitor" class="btn btn-dark">Monitoreo en Tiempo Real</a>
-    <a href="/cuentas" class="btn btn-dark">Administrar Cuentas</a>
-    <a href="/soporte" class="btn btn-dark">Soporte</a>
-    <a href="/logout" class="btn btn-secondary">Cerrar sesión</a>
+<div class="card">
+    <div class="card-body">
+        <h2 class="text-center">Bienvenido/a, <?php echo htmlspecialchars($nombre ?? ''); ?></h2>
+        <div class="image-container">
+            <img src="/imgs/Terra.png" width="50" height="50" class="img-fluid">
+        </div>
+        <hr />
+        <h3 class="text-center">Funciones:</h3>
+        <br />
+        <br />
+        <ul class="list-group list-group-horizontal">
+            <li class="list-group-item flex-fill"><a href="/historico" class="btn btn-dark btn-primario">Ver Histórico</a></li>
+            <li class="list-group-item flex-fill"><a href="/monitor" class="btn btn-dark btn-primario">Monitoreo en Tiempo Real</a></li>
+            <li class="list-group-item flex-fill"><a href="/cuentas" class="btn btn-dark btn-primario">Administrar Cuentas</a></li>
+            <li class="list-group-item flex-fill"><a href="/soporte" class="btn btn-dark btn-primario">Soporte</a></li>
+            <li class="list-group-item flex-fill"><a href="/micuenta" class="btn btn-dark btn-primario">Mi cuenta</a></li>
+        </ul>
+        <img src="/imgs/inv.png" width="350" height="350" class="rounded mx-auto d-block">
+        <div class="text-center mt-3">
+            <a href="/logout" class="btn btn-secondary">Cerrar sesión</a>
+        </div>
+    </div>
 </div>

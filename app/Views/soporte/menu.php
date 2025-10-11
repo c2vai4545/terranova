@@ -1,11 +1,24 @@
-<h1 class="text-center">Soporte</h1>
-<div class="d-grid gap-2 col-6 mx-auto">
-    <a href="/soporte/crear" class="btn btn-dark">Crear Ticket</a>
-    <?php if ((string)($_SESSION['idPerfil'] ?? '') === '1'): ?>
-        <a href="/soporte/admin" class="btn btn-dark">Ver Tickets</a>
-        <a href="/admin" class="btn btn-secondary">Volver</a>
-    <?php else: ?>
-        <a href="/soporte/mis" class="btn btn-dark">Mis Tickets</a>
-        <a href="/worker" class="btn btn-secondary">Volver</a>
-    <?php endif; ?>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body text-center">
+            <h1>Soporte</h1>
+            <hr />
+            <br />
+            <div class="d-flex justify-content-center align-items-start">
+                <img class="logo3" src="/imgs/Terra.png" width="200" height="200" />
+                <div class="mt-3 w-100">
+                    <ul class="list-group list-group-horizontal justify-content-center">
+                        <li class="list-group-item flex-fill"><a class="btn btn-dark btn-primario" href="/soporte/crear">Crear Ticket</a></li>
+                        <?php if ((string)($_SESSION['idPerfil'] ?? '') === '1'): ?>
+                            <li class="list-group-item flex-fill"><a class="btn btn-dark btn-primario" href="/soporte/admin">Ver Tickets</a></li>
+                            <li class="list-group-item flex-fill"><a class="btn btn-secondary" href="/admin">Volver</a></li>
+                        <?php else: ?>
+                            <li class="list-group-item flex-fill"><a class="btn btn-dark btn-primario" href="/soporte/mis">Mis Tickets</a></li>
+                            <li class="list-group-item flex-fill"><a class="btn btn-secondary" href="/worker">Volver</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

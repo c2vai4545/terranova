@@ -1,7 +1,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <?php if (!empty($lecturas)): ?>
     <?php foreach ($lecturas as $index => $lectura): ?>
-        <h3 class="text-center">Tipo <?php echo htmlspecialchars((string)$lectura['tipoLectura']); ?></h3>
+        <h3 class="text-center"><?php echo htmlspecialchars($lectura['tipoNombre']); ?></h3>
         <div class="row">
             <div class="col-8">
                 <canvas id="grafico_<?php echo $index; ?>"></canvas>
@@ -37,7 +37,7 @@
                     data: {
                         labels,
                         datasets: [{
-                            label: labels,
+                            label: '<?php echo htmlspecialchars($lectura['tipoNombre']); ?>',
                             data: dataVals,
                             backgroundColor: 'transparent',
                             borderColor: '#3c763d',
@@ -58,5 +58,7 @@
     <?php endforeach; ?>
 <?php endif; ?>
 <div class="text-center d-grid gap-2 col-6 mx-auto">
-    <a href="/historico" class="btn btn-dark btn-lg">Volver</a>
+    <a href="/historico" class="btn btn-dark btn-primario btn-lg">Volver</a>
+    <br />
+    <br />
 </div>

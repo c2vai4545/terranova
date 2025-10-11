@@ -77,9 +77,12 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
 
 ## Flujo de datos de sensores
 
-1) Microcontrolador → `datosdb.php` (POST: `temp`, `humAir`, `humSue`).
-2) `datosdb.php` actualiza `Temporal` y, si corresponde (≥ 2 h), inserta en `Lectura` por tipo.
-3) UI de Monitoreo consulta `monitoreo_ajax.php` cada 5 s → actualiza DOM.
+1) Microcontrolador → `POST /ingesta`.
+   - Acepta `application/json`:
+     - `{ "temp": number, "humAir": number, "humSue": number }`
+   - Alternativamente `application/x-www-form-urlencoded` con campos `temp`, `humAir`, `humSue`.
+2) El backend actualiza `Temporal` y, si corresponde (≥ 2 h), inserta en `Lectura` por tipo (1=temp, 2=hum aire, 3=hum suelo).
+3) UI de Monitoreo consulta `GET /monitor/data` cada 5 s → actualiza DOM.
 4) Histórico consulta `Lectura` por rango y tipos seleccionados.
 
 ## Requisitos
@@ -129,8 +132,8 @@ Opción A (estructura original PHP):
 Opción B (front-controller en `public/`):
 1) Crear base de datos y tablas según el esquema deducido arriba.
 2) Configurar credenciales en `app/Config/config.php`.
-3) Levantar PHP embebido desde `public/`:
-   - `php -S localhost:8000 -t public`
+3) Levantar PHP embebido usando el router (para servir `/estilos.css` e imágenes):
+   - `php -S localhost:8000 public/index.php`
 4) Acceder a `http://localhost:8000/`.
 
 ## Seguridad y consideraciones
