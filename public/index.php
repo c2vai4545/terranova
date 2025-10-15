@@ -1,4 +1,13 @@
 <?php
+// Configurar cookie de sesión apta para apps móviles (HTTPS, SameSite=None)
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path' => '/',
+    'domain' => '',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'None',
+]);
 session_start();
 
 define('BASE_PATH', dirname(__DIR__));
@@ -41,6 +50,10 @@ function jsonResponse(array $payload, int $status = 200): void
 {
     http_response_code($status);
     header('Content-Type: application/json');
+    // CORS sólo para API
+    if (isApiRequest()) {
+        sendCorsHeaders();
+    }
     echo json_encode($payload);
 }
 
@@ -56,6 +69,29 @@ $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
 if ($uri !== '/' && substr($uri, -1) === '/') {
     $uri = rtrim($uri, '/');
+}
+
+function isApiRequest(): bool
+{
+    $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+    return strpos($path, '/api/') === 0;
+}
+
+function sendCorsHeaders(): void
+{
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+}
+
+// Responder preflight para API
+if ($method === 'OPTIONS' && isApiRequest()) {
+    sendCorsHeaders();
+    http_response_code(204);
+    exit();
 }
 
 // Servir assets estáticos fuera de public (compatibilidad con estructura existente)
@@ -84,16 +120,24 @@ if ($method === 'GET' && strpos($uri, '/imgs/') === 0) {
 $routeKey = $method . ' ' . $uri;
 
 if (!isset($routes[$routeKey])) {
-    http_response_code(404);
-    echo 'Ruta no encontrada: ' . htmlspecialchars($routeKey);
+    if (isApiRequest()) {
+        jsonResponse(['error' => 'not_found', 'route' => $routeKey], 404);
+    } else {
+        http_response_code(404);
+        echo 'Ruta no encontrada: ' . htmlspecialchars($routeKey);
+    }
     exit();
 }
 
 [$controllerClass, $action] = $routes[$routeKey];
 
 if (!class_exists($controllerClass) || !method_exists($controllerClass, $action)) {
-    http_response_code(500);
-    echo 'Controlador o acción inválida.';
+    if (isApiRequest()) {
+        jsonResponse(['error' => 'invalid_handler'], 500);
+    } else {
+        http_response_code(500);
+        echo 'Controlador o acción inválida.';
+    }
     exit();
 }
 
