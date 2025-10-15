@@ -8,6 +8,9 @@ RUN sed -i 's#DocumentRoot /var/www/html#DocumentRoot /var/www/html/public#' /et
 # Permitir .htaccess en /public
 RUN sed -i 's#<Directory /var/www/>#<Directory /var/www/>\n\tAllowOverride All#' /etc/apache2/apache2.conf
 
+# Propagar PORT en tiempo de ejecución para health check de Koyeb
+ENV PORT=8000
+
 WORKDIR /var/www/html
 COPY . .
 
