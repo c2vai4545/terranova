@@ -25,46 +25,21 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
   - `idPerfil = 2`: Trabajador.
 - Redirecciones automáticas según rol (`administrador.php` o `trabajador.php`).
 
-## Módulos del sistema (rutas principales)
+## Módulos del sistema (rutas web actuales)
 
-- Landing: `index.html` con acceso al login.
-- Autenticación:
-  - `login.php`: valida credenciales contra tabla `Usuario` y crea sesión.
-  - `logout.php`: destruye sesión y vuelve a inicio.
-- Paneles:
-  - `administrador.php`: menú a Histórico, Monitoreo, Cuentas, Soporte, Mi Cuenta.
-  - `trabajador.php`: menú a Monitoreo, Soporte, Mi Cuenta.
-- Monitoreo en tiempo real:
-  - `monitoreo.php`: muestra valores actuales de `Temporal` y se actualiza cada 5 s vía AJAX.
-  - `monitoreo_ajax.php`: endpoint JSON que lee `Temporal` y retorna `{ temperatura, humedadAire, humedadSuelo }`.
-- Ingesta de mediciones (desde microcontrolador):
-  - `datosdb.php` (POST): parámetros `temp`, `humSue`, `humAir`.
-    - `TRUNCATE Temporal` y `INSERT` de los últimos valores.
-    - Si han pasado ≥ 2 horas desde el último registro en `Lectura`, inserta:
-      - Temperatura con `idTipoLectura = 1`.
-      - Humedad aire con `idTipoLectura = 2`.
-      - Humedad suelo con `idTipoLectura = 3`.
-    - Zona horaria: `America/Punta_Arenas`.
-- Histórico de mediciones:
-  - `historico.php`: selector de rango de fechas y tipos de lectura (desde tabla `TipoLectura`).
-  - `graficos.php`: consulta `Lectura` y muestra:
-    - Gráfica por tipo con Chart.js.
-    - Tabla con `fechaLectura`, `horaLectura`, `lectura`.
-- Soporte (tickets):
-  - `soporte.php`: menú contextual por rol.
-  - Crear ticket: `crearTicket.php` (POST → `TicketSoporte`).
-  - Tickets abiertos (admin): `ticketSoporte.php` (lista, ver problema, cerrar):
-    - Obtiene problema: `obtenerProblema.php?id`.
-    - Cierre: `cerrarTicket.php` (POST: `id`, `respuesta`) → setea `respuesta`, `fechaRespuesta`, `solucionador`.
-  - Mis tickets (trabajador): `misTickets.php` (lista, ver detalle):
-    - Obtiene detalle: `obtenerRespuesta.php?id` (JSON: problema, respuesta, fecha, solucionador).
-- Cuentas de usuario (solo administrador):
-  - `cuentas.php`: navegación para crear/editar.
-  - `crearCuenta.php`: inserta en `Usuario` con contraseña por defecto `Terranova.2023`.
-  - `editarCuenta.php`: lista usuarios, permite editar campos básicos y perfil; incluye reseteo de contraseña.
-  - Servicios auxiliares: `obtenerUsuario.php` (datos + perfiles en JSON), `guardarEdicion.php`, `resetearContrasena.php`.
-- Mi cuenta (cambio de contraseña):
-  - `micuenta.php`: valida requisitos y actualiza contraseña del usuario autenticado; cierra sesión al finalizar.
+- Landing: `/` (botón de login).
+- Autenticación (web): `/login`, `/logout`.
+- Panel administrador: `/admin` (Histórico, Monitoreo, Cuentas, Soporte, Mi cuenta).
+- Panel trabajador: `/worker` (Monitoreo, Soporte, Mi cuenta).
+- Monitoreo (web):
+  - Vista: `/monitor`.
+  - Datos usados por la vista: `GET /monitor/data` → `{ temperatura, humedadAire, humedadSuelo }`.
+- Histórico (web):
+  - Filtros: `/historico`.
+  - Gráficos: `/historico/graficos`.
+- Soporte (web): `/soporte`, `/soporte/crear`, `/soporte/admin`, `/soporte/mis`.
+- Cuentas (web, admin): `/cuentas`, `/cuentas/crear`, `/cuentas/editar`.
+- Mi cuenta (web): `/micuenta`.
 
 ## Estructura de base de datos (según el código)
 
@@ -82,7 +57,7 @@ Sistema web para gestión y monitoreo de un invernadero automatizado con medicio
      - `{ "temp": number, "humAir": number, "humSue": number }`
    - Alternativamente `application/x-www-form-urlencoded` con campos `temp`, `humAir`, `humSue`.
 2) El backend actualiza `Temporal` y, si corresponde (≥ 2 h), inserta en `Lectura` por tipo (1=temp, 2=hum aire, 3=hum suelo).
-3) UI de Monitoreo consulta `GET /monitor/data` cada 5 s → actualiza DOM.
+3) UI de Monitoreo (web) consulta `GET /monitor/data` cada 5 s → actualiza DOM.
 4) Histórico consulta `Lectura` por rango y tipos seleccionados.
 
 ## Requisitos
@@ -98,27 +73,7 @@ Plantilla de configuración privada:
 - `app/Config/config.local.php` está en `.gitignore` y no se versiona.
 - Si no existe `config.local.php`, se usará `app/Config/config.php`.
 
-Para la versión original (sin front-controller), las credenciales están embebidas en los scripts (marcadores “QUITADO POR SEGURIDAD”). Debe editarse cada archivo que realiza conexión a BD y establecer `host`, `dbname`, `username`, `password`:
-
-- `login.php`
-- `monitoreo.php`
-- `monitoreo_ajax.php`
-- `datosdb.php`
-- `historico.php`
-- `graficos.php`
-- `ticketSoporte.php`
-- `misTickets.php`
-- `crearTicket.php`
-- `obtenerProblema.php`
-- `cerrarTicket.php`
-- `obtenerRespuesta.php`
-- `cuentas.php` (navegación)
-- `crearCuenta.php`
-- `editarCuenta.php`
-- `obtenerUsuario.php`
-- `guardarEdicion.php`
-- `resetearContrasena.php`
-- `micuenta.php`
+Nota: la versión actual usa front‑controller y configuración centralizada (`app/Config/config.local.php`).
 
 Sugerencia: centralizar credenciales en un archivo de configuración común e incluirlo para evitar duplicación y facilitar despliegue.
 
@@ -138,7 +93,7 @@ Opción B (front-controller en `public/`):
 
 ## Seguridad y consideraciones
 
-- Contraseñas en texto plano en `Usuario.contraseña` y durante login/cambio de clave. Recomendado: usar hashing seguro (password_hash/password_verify) y política de renovación.
+- Contraseñas con hashing bcrypt en `Usuario.contraseña` (password_hash/password_verify).
 - Varias consultas construidas con interpolación directa. Recomendado: parametrizar todas las consultas (PDO/mysqli prepared statements) para mitigar inyección SQL.
 - Sesiones sin regeneración de ID tras login ni controles de CSRF. Recomendado: regenerar `session_id()` al autenticarse y proteger formularios con tokens CSRF.
 - El endpoint `datosdb.php` acepta POST sin autenticación. Recomendado: token de dispositivo, IP allowlist o firma HMAC.
@@ -151,7 +106,7 @@ Opción B (front-controller en `public/`):
 
 ## Acceso de prueba
 
-- RUT: `00000001`
+- RUT: `22222222`
 - Pass: `Terranova.2023`
 
 ## Sitio del proyecto
@@ -160,13 +115,40 @@ No disponible actualmente.
 
 ## Estructura de archivos (principal)
 
-- `index.html` (inicio)
-- `login.php`, `logout.php` (autenticación)
-- `administrador.php`, `trabajador.php` (paneles)
-- `monitoreo.php`, `monitoreo_ajax.php`, `datosdb.php` (monitoreo e ingesta)
-- `historico.php`, `graficos.php` (histórico y gráficas)
-- `soporte.php`, `crearTicket.php`, `ticketSoporte.php`, `misTickets.php` (soporte)
-- `obtenerProblema.php`, `cerrarTicket.php`, `obtenerRespuesta.php` (APIs soporte)
-- `cuentas.php`, `crearCuenta.php`, `editarCuenta.php`, `obtenerUsuario.php`, `guardarEdicion.php`, `resetearContrasena.php` (gestión de cuentas)
-- `micuenta.php` (cambio de contraseña)
+- `public/index.php` (front‑controller/router)
+- `app/Config/` (config y rutas)
+- `app/Controllers/` (controladores web)
+- `app/Models/` (modelos/DAO)
+- `app/Services/` (servicios)
+- `app/Views/` (vistas)
 - `estilos.css`, `imgs/` (assets)
+
+## Estado de API pública
+
+Rutas disponibles para la app móvil (basadas en sesión PHP):
+
+- `POST /api/login` → Inicia sesión.
+  - Body JSON: `{ "rut": string(8), "contrasena": string }`
+  - 200: `{ "rut": string, "idPerfil": 1|2 }`
+  - 400/401 en error.
+- `POST /api/logout` → Cierra sesión (requiere sesión). Respuesta: `{ "ok": true }`.
+- `GET /api/me` → Estado de sesión (requiere sesión). Respuesta: `{ "auth": true, "rut", "idPerfil" }`.
+- `GET /api/monitor` → Métricas actuales para UI (requiere sesión).
+  - Igual a `GET /monitor/data` → `{ temperatura, humedadAire, humedadSuelo }`.
+- `POST /api/ingesta` → Ingreso de lecturas (equivalente a `POST /ingesta`).
+  - JSON: `{ "temp": number, "humAir": number, "humSue": number }`.
+  - Seguridad: Header `Authorization: Bearer <API_KEY>` o `X-Api-Key: <API_KEY>`.
+- `POST /api/change-password` → Cambiar contraseña (requiere sesión).
+  - Body JSON: `{ "nuevaContrasena": string }`
+  - 200: `{ "ok": true }`.
+ - `GET /api/historico` → Series históricas (requiere sesión).
+   - Query: `start=YYYY-MM-DD&end=YYYY-MM-DD&tipos=1,2,3` (tipos opcional; por defecto todos).
+   - 200: `{ start, end, series: [{ idTipoLectura, tipoNombre, data: [{ fechaLectura, horaLectura, lectura }] }] }`.
+
+-Notas:
+- Estas rutas usan sesión/cookies; si no hay sesión devuelven 401 JSON.
+- Endpoints de Soporte, Cuentas e Histórico como API externa siguen pendientes.
+
+### Seguridad de ingesta
+- Configurar la clave en `app/Config/config.local.php` bajo `api.ingesta_key`.
+- Producción: rotar periódicamente y no exponerla en cliente si el dispositivo es comprometible.

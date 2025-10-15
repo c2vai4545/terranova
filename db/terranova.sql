@@ -92,4 +92,22 @@ INSERT INTO TipoLectura (idTipoLectura, nombre) VALUES
   (3, 'Humedad Suelo')
 ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
+INSERT INTO Usuario (rut, nombre1, nombre2, apellido1, apellido2, idPerfil, contraseña)
+VALUES ('11111111','Pepito','Jose','Administrador','Meromero',1,'$2y$10$kFPGd/vged97A6gzj1q5FOuSTkMugU3.G.ajeNakUzTaFX.1MRxBy')
+ON DUPLICATE KEY UPDATE
+  nombre1=VALUES(nombre1),
+  nombre2=VALUES(nombre2),
+  apellido1=VALUES(apellido1),
+  apellido2=VALUES(apellido2),
+  idPerfil=VALUES(idPerfil),
+  contraseña=VALUES(contraseña);
 
+INSERT INTO Usuario (rut, nombre1, nombre2, apellido1, apellido2, idPerfil, contraseña)
+VALUES ('22222222','Juanito','Jose','Trabajador','Peon',2,'$2y$10$kFPGd/vged97A6gzj1q5FOuSTkMugU3.G.ajeNakUzTaFX.1MRxBy')
+ON DUPLICATE KEY UPDATE
+  nombre1=VALUES(nombre1),
+  nombre2=VALUES(nombre2),
+  apellido1=VALUES(apellido1),
+  apellido2=VALUES(apellido2),
+  idPerfil=VALUES(idPerfil),
+  contraseña=VALUES(contraseña);
