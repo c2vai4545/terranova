@@ -35,4 +35,13 @@ return [
 
     'GET /micuenta' => [UsuarioController::class, 'miCuentaForm'],
     'POST /micuenta' => [UsuarioController::class, 'miCuenta'],
+
+    // API para app móvil
+    'POST /api/login' => [AuthApiController::class, 'login'],
+    'POST /api/logout' => [AuthApiController::class, 'logout'],
+    'GET /api/me' => [AuthApiController::class, 'me'],
+    'GET /api/monitor' => [MonitorController::class, 'ajaxApi'],
+    'POST /api/ingesta' => [MonitorController::class, 'ingesta'],
+    'POST /api/change-password' => [AuthApiController::class, 'changePassword'],
+    'GET /api/historico' => [HistoricoController::class, 'api'],
 ];
