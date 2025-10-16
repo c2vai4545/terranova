@@ -1,11 +1,6 @@
 <?php
 class AuthApiController
 {
-    public function ping(): void
-    {
-        jsonResponse(['ok' => true, 'time' => time()]);
-    }
-
     public function login(): void
     {
         $body = json_decode(file_get_contents('php://input'), true) ?? $_POST;
