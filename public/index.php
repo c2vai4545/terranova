@@ -1,4 +1,10 @@
 <?php
+// Permitir autenticación por header 'X-Session-Id' (alternativa a cookies para apps nativas)
+$sidHeader = $_SERVER['HTTP_X_SESSION_ID'] ?? null;
+if ($sidHeader && is_string($sidHeader)) {
+    @session_id($sidHeader);
+}
+
 // Configurar cookie de sesión apta para apps móviles (HTTPS, SameSite=None)
 session_set_cookie_params([
     'lifetime' => 0,
@@ -83,7 +89,7 @@ function sendCorsHeaders(): void
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Session-Id');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 }
 

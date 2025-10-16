@@ -37,6 +37,7 @@ return [
     'POST /micuenta' => [UsuarioController::class, 'miCuenta'],
 
     // API para app móvil
+    'GET /api/ping' => [AuthApiController::class, 'ping'],
     'POST /api/login' => [AuthApiController::class, 'login'],
     'POST /api/logout' => [AuthApiController::class, 'logout'],
     'GET /api/me' => [AuthApiController::class, 'me'],
