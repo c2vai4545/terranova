@@ -84,4 +84,28 @@ class SoporteController
             jsonResponse(['problema' => null, 'respuesta' => null, 'fechaRespuesta' => null, 'solucionador' => null]);
         }
     }
+
+    // API para app móvil: obtener mis tickets
+    public function misTicketsApi(): void
+    {
+        ApiSessionMiddleware::requireAuth();
+        $tickets = TicketSoporteModel::listByCreador((string)$_SESSION['rut']);
+
+        $formattedTickets = [];
+        foreach ($tickets as $ticket) {
+            $estado = 'abierto';
+            if (!empty($ticket['respuesta']) && !empty($ticket['fechaRespuesta'])) {
+                $estado = 'cerrado';
+            }
+
+            $formattedTickets[] = [
+                'id' => (int)$ticket['id'],
+                'fechaCreacion' => $ticket['fechaCreacion'] . 'T00:00:00Z', // Formato ISO básico
+                'estado' => $estado,
+                'tieneRespuesta' => !empty($ticket['respuesta'])
+            ];
+        }
+
+        jsonResponse(['tickets' => $formattedTickets]);
+    }
 }
