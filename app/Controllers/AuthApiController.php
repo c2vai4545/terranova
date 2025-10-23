@@ -17,7 +17,8 @@ class AuthApiController
         }
         $_SESSION['rut'] = $auth['rut'];
         $_SESSION['idPerfil'] = (string)$auth['idPerfil'];
-        jsonResponse(['rut' => $auth['rut'], 'idPerfil' => (int)$auth['idPerfil']]);
+        // Retornar también el ID de sesión para clientes que no persistan cookies automáticamente
+        jsonResponse(['rut' => $auth['rut'], 'idPerfil' => (int)$auth['idPerfil'], 'sid' => session_id()]);
     }
 
     public function logout(): void

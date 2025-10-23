@@ -41,8 +41,15 @@ class MonitorController
 
     public function ingesta(): void
     {
-        // Requerir API Key para ingestas (microcontrolador y app móvil)
-        ApiKeyMiddleware::requireValid();
+        // Requerir sesión y permiso de usuario para ingresar lecturas
+        ApiSessionMiddleware::requireAuth();
+        $idPerfil = isset($_SESSION['idPerfil']) ? (int)$_SESSION['idPerfil'] : null;
+        // Política: solo Trabajador (idPerfil = 2) puede ingresar lecturas manuales
+        if ($idPerfil !== 2) {
+            http_response_code(403);
+            echo 'No autorizado para ingresar lecturas';
+            exit();
+        }
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         $payload = [];
         if (stripos($contentType, 'application/json') !== false) {
