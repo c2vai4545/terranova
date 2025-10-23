@@ -26,9 +26,6 @@ return [
         'pass' => getenv('DB_PASS'),
         'charset' => 'utf8mb4',
     ],
-    'api' => [
-        'ingesta_key' => getenv('API_INGESTA_KEY') ?: 'CAMBIAR_ESTA_CLAVE',
-    ],
 ];
 PHP
 
