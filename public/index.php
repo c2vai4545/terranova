@@ -89,7 +89,7 @@ function sendCorsHeaders(): void
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
     header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Session-Id');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Session-Id, X-Api-Key');
     header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 }
 
