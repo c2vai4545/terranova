@@ -45,4 +45,5 @@ return [
     'POST /api/change-password' => [AuthApiController::class, 'changePassword'],
     'GET /api/historico' => [HistoricoController::class, 'api'],
     'GET /api/soporte/mis' => [SoporteController::class, 'misTicketsApi'],
+    'POST /api/soporte/new' => [SoporteController::class, 'crearApi'],
 ];
