@@ -17,6 +17,8 @@ class AuthApiController
         }
         $_SESSION['rut'] = $auth['rut'];
         $_SESSION['idPerfil'] = (string)$auth['idPerfil'];
+        // Asegurar cookie de sesión en respuestas API (modo dev sin HTTPS)
+        header('Set-Cookie: PHPSESSID=' . session_id() . '; Path=/; HttpOnly; SameSite=Lax');
         // Retornar también el ID de sesión para clientes que no persistan cookies automáticamente
         jsonResponse(['rut' => $auth['rut'], 'idPerfil' => (int)$auth['idPerfil'], 'sid' => session_id()]);
     }

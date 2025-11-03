@@ -110,7 +110,7 @@ class SoporteController
     }
 
     // API para app móvil: crear nuevo ticket
-    public function crearApi(): void
+    public function newApi(): void
     {
         ApiSessionMiddleware::requireAuth();
 

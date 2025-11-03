@@ -4,6 +4,7 @@ return [
     'GET /login' => [AuthController::class, 'showLogin'],
     'POST /login' => [AuthController::class, 'login'],
     'GET /logout' => [AuthController::class, 'logout'],
+    'GET /after-login' => [AuthController::class, 'afterLogin'],
 
     'GET /admin' => [DashboardController::class, 'admin'],
     'GET /worker' => [DashboardController::class, 'worker'],
@@ -45,5 +46,5 @@ return [
     'POST /api/change-password' => [AuthApiController::class, 'changePassword'],
     'GET /api/historico' => [HistoricoController::class, 'api'],
     'GET /api/soporte/mis' => [SoporteController::class, 'misTicketsApi'],
-    'POST /api/soporte/new' => [SoporteController::class, 'crearApi'],
+    'POST /api/soporte/new' => [SoporteController::class, 'newApi'],
 ];

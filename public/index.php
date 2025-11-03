@@ -1,20 +1,25 @@
 <?php
-// Permitir autenticación por header 'X-Session-Id' (alternativa a cookies para apps nativas)
+// Fijar el SID antes de iniciar la sesión: header y cookie
 $sidHeader = $_SERVER['HTTP_X_SESSION_ID'] ?? null;
-if ($sidHeader && is_string($sidHeader)) {
-    @session_id($sidHeader);
+$sidCookie = $_COOKIE['PHPSESSID'] ?? null;
+$incomingSid = $sidHeader ?: $sidCookie;
+if ($incomingSid && is_string($incomingSid)) {
+    @session_id($incomingSid);
 }
 
-// Configurar cookie de sesión apta para apps móviles (HTTPS, SameSite=None)
+// Configurar cookie de sesión (modo dev sin HTTPS)
 session_set_cookie_params([
     'lifetime' => 0,
     'path' => '/',
     'domain' => '',
-    'secure' => true,
+    'secure' => false,
     'httponly' => true,
-    'samesite' => 'None',
+    'samesite' => 'Lax',
 ]);
 session_start();
+
+// Exponer siempre el Session ID en la respuesta para clientes que no usan cookies
+header('X-Session-Id: ' . session_id());
 
 define('BASE_PATH', dirname(__DIR__));
 
@@ -56,6 +61,8 @@ function jsonResponse(array $payload, int $status = 200): void
 {
     http_response_code($status);
     header('Content-Type: application/json');
+    // Incluir también el SID en respuestas JSON
+    header('X-Session-Id: ' . session_id());
     // CORS sólo para API
     if (isApiRequest()) {
         sendCorsHeaders();

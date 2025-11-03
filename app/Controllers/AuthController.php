@@ -49,4 +49,16 @@ class AuthController
         session_destroy();
         redirect('/');
     }
+
+    public function afterLogin(): void
+    {
+        // Redirección server-side según sesión ya establecida
+        if (!isset($_SESSION['rut'], $_SESSION['idPerfil'])) {
+            redirect('/');
+        }
+        $perfil = (string)($_SESSION['idPerfil'] ?? '');
+        if ($perfil === '1') { redirect('/admin'); }
+        if ($perfil === '2') { redirect('/worker'); }
+        redirect('/');
+    }
 }
