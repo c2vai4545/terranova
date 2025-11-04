@@ -3,68 +3,81 @@ class CuentaController
 {
     public function menu(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
-        view('cuentas/menu');
+        RoleMiddleware::require([1]);
+        $usuarios = UsuarioModel::listAll();
+        view('cuentas/menu', ['usuarios' => $usuarios]);
     }
 
     public function crearForm(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
+        RoleMiddleware::require([1]);
         $perfiles = PerfilModel::listAll();
         view('cuentas/crear', ['perfiles' => $perfiles]);
     }
 
     public function crear(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
+        RoleMiddleware::require([1]);
 
-        $data = [
-            'rut' => $_POST['rut'] ?? '',
-            'nombre1' => $_POST['nombre1'] ?? '',
-            'nombre2' => $_POST['nombre2'] ?? null,
-            'apellido1' => $_POST['apellido1'] ?? '',
-            'apellido2' => $_POST['apellido2'] ?? null,
-            'idPerfil' => (int)($_POST['perfil'] ?? 0),
-            'contraseña' => 'Terranova.2023',
+        $schema = [
+            'rut' => ['required' => true, 'regex' => '/^\d{8}$/'],
+            'nombre1' => ['required' => true, 'min' => 1, 'max' => 50],
+            'apellido1' => ['required' => true, 'min' => 1, 'max' => 50],
+            'idPerfil' => ['required' => true, 'type' => 'int', 'in' => array_column(PerfilModel::listAll(), 'idPerfil')],
         ];
-
-        if (!Validation::isRut8($data['rut']) || $data['nombre1'] === '' || $data['apellido1'] === '' || $data['idPerfil'] === 0) {
+        [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
+        if (!$ok) {
             $perfiles = PerfilModel::listAll();
-            view('cuentas/crear', ['perfiles' => $perfiles, 'error' => 'Datos inválidos.']);
+            redirect('/cuentas/crear?error=' . urlencode(implode(', ', $errors)));
             return;
         }
+        $data = [
+            'rut' => $clean['rut'],
+            'nombre1' => $clean['nombre1'],
+            'nombre2' => $_POST['nombre2'] ?? null,
+            'apellido1' => $clean['apellido1'],
+            'apellido2' => $_POST['apellido2'] ?? null,
+            'idPerfil' => (int)$clean['idPerfil'],
+            'contraseña' => 'Terranova.2023',
+        ];
         if (UsuarioModel::existsRut($data['rut'])) {
             $perfiles = PerfilModel::listAll();
             view('cuentas/crear', ['perfiles' => $perfiles, 'error' => 'El RUT ingresado ya existe.']);
             return;
         }
         UsuarioModel::insert($data);
-        redirect('/cuentas');
+        redirect('/cuentas/crear?success=Usuario creado exitosamente.');
     }
 
     public function editarForm(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
+        RoleMiddleware::require([1]);
         $usuarios = UsuarioModel::listAll();
         view('cuentas/editar', ['usuarios' => $usuarios]);
     }
 
     public function editar(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
-        $rut = $_POST['rut'] ?? '';
+        RoleMiddleware::require([1]);
+        $schema = [
+            'rut' => ['required' => true, 'regex' => '/^\d{8}$/'],
+            'nombre1' => ['required' => true, 'min' => 1, 'max' => 50],
+            'apellido1' => ['required' => true, 'min' => 1, 'max' => 50],
+            'idPerfil' => ['required' => true, 'type' => 'int', 'in' => array_column(PerfilModel::listAll(), 'idPerfil')],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
+        if (!$ok) {
+            $usuarios = UsuarioModel::listAll();
+            view('cuentas/editar', ['usuarios' => $usuarios, 'error' => implode(', ', $errors)]);
+            return;
+        }
         $u = [
-            'rut' => $rut,
-            'nombre1' => $_POST['nombre1'] ?? '',
+            'rut' => $clean['rut'],
+            'nombre1' => $clean['nombre1'],
             'nombre2' => $_POST['nombre2'] ?? null,
-            'apellido1' => $_POST['apellido1'] ?? '',
+            'apellido1' => $clean['apellido1'],
             'apellido2' => $_POST['apellido2'] ?? null,
-            'idPerfil' => (int)($_POST['perfil'] ?? 0),
+            'idPerfil' => (int)$clean['idPerfil'],
         ];
         UsuarioModel::update($u);
         redirect('/cuentas/editar');
@@ -72,8 +85,7 @@ class CuentaController
 
     public function obtenerUsuario(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') redirect('/');
+        RoleMiddleware::require([1]);
         $rut = $_GET['rut'] ?? '';
         $usuario = UsuarioModel::findByRut($rut);
         $perfiles = PerfilModel::listAll();

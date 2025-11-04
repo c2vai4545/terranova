@@ -4,12 +4,18 @@ class AuthApiController
     public function login(): void
     {
         $body = json_decode(file_get_contents('php://input'), true) ?? $_POST;
-        $rut = $body['rut'] ?? '';
-        $pass = $body['contrasena'] ?? '';
-        if (!Validation::isRut8($rut) || $pass === '') {
+        $schema = [
+            'rut' => ['required' => true, 'regex' => '/^\d{8}$/'],
+            'contrasena' => ['required' => true, 'min' => 1],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($body, $schema);
+        if (!$ok) {
             jsonResponse(['error' => 'credenciales_invalidas'], 400);
             return;
         }
+        $rut = $clean['rut'];
+        $pass = $clean['contrasena'];
+
         $auth = UsuarioModel::findAuthByRut($rut);
         if (!$auth || !password_verify($pass, $auth['contraseña'])) {
             jsonResponse(['error' => 'usuario_o_contrasena_incorrectos'], 401);

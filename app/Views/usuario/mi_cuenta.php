@@ -2,9 +2,7 @@
     <h1 class="text-center">Mi Cuenta</h1>
     <div class="card">
         <?php if (!empty($mensaje ?? '')): ?>
-            <script>
-                alert('<?php echo htmlspecialchars($mensaje); ?>');
-            </script>
+            <div id="mensaje-alert" data-message="<?php echo htmlspecialchars($mensaje); ?>"></div>
         <?php endif; ?>
         <form method="POST" action="/micuenta">
             <div class="form-group row">
@@ -19,5 +17,6 @@
         </form>
     </div>
     <br />
-    <button class="btn btn-secondary" onclick="location.href='<?php echo ((string)($_SESSION['idPerfil'] ?? '') === '1') ? '/admin' : '/worker'; ?>'">Volver</button>
+    <button id="volver-btn" class="btn btn-secondary" data-redirect="<?php echo ((string)($_SESSION['idPerfil'] ?? '') === '1') ? '/admin' : '/worker'; ?>">Volver</button>
 </div>
+<script src="/js/usuario_mi_cuenta.js"></script>

@@ -12,6 +12,25 @@
                         <li class="list-group-item flex-fill"><a class="btn btn-dark btn-primario" href="/cuentas/editar">Editar cuenta</a></li>
                         <li class="list-group-item flex-fill"><a class="btn btn-secondary" href="/admin">Volver</a></li>
                     </ul>
+                    <br>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>RUT</th>
+                                <th>Nombre</th>
+                                <th>Perfil</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($usuarios as $usuario): ?>
+                                <tr>
+                                    <td><?= $usuario['rut'] ?></td>
+                                    <td><?= $usuario['nombre1'] ?> <?= $usuario['apellido1'] ?></td>
+                                    <td><?= $usuario['idPerfil'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

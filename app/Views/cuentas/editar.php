@@ -19,10 +19,10 @@
                     <td><?php echo htmlspecialchars($usuario['apellido1']); ?></td>
                     <td><?php echo htmlspecialchars((string)$usuario['idPerfil']); ?></td>
                     <td class="text-center">
-                        <input type="radio" name="usuario" value="<?php echo htmlspecialchars($usuario['rut']); ?>" onclick="mostrarFormulario('<?php echo htmlspecialchars($usuario['rut']); ?>')">
+                        <input type="radio" name="usuario" value="<?php echo htmlspecialchars($usuario['rut']); ?>">
                     </td>
                     <td>
-                        <button class="btn btn-dark" onclick="resetearContrasena('<?php echo htmlspecialchars($usuario['rut']); ?>')">Resetear Contraseña</button>
+                        <button class="btn btn-dark reset-password-btn" data-rut="<?php echo htmlspecialchars($usuario['rut']); ?>">Resetear Contraseña</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -61,34 +61,4 @@
         <a href="/admin" class="btn btn-secondary">Volver</a>
     </div>
 
-    <script>
-        function mostrarFormulario(rut) {
-            fetch('/cuentas/usuario?rut=' + encodeURIComponent(rut))
-                .then(r => r.json())
-                .then(d => {
-                    const u = d.usuario,
-                        perfiles = d.perfiles;
-                    document.getElementById('rut').value = u.rut;
-                    document.getElementById('nombre1').value = u.nombre1 || '';
-                    document.getElementById('nombre2').value = u.nombre2 || '';
-                    document.getElementById('apellido1').value = u.apellido1 || '';
-                    document.getElementById('apellido2').value = u.apellido2 || '';
-                    const select = document.getElementById('perfil');
-                    select.innerHTML = '';
-                    perfiles.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p.idPerfil;
-                        opt.text = p.nombrePerfil;
-                        select.appendChild(opt);
-                    });
-                    select.value = u.idPerfil;
-                    document.getElementById('formulario-edicion').style.display = 'block';
-                });
-        }
-
-        function resetearContrasena(rut) {
-            fetch('/cuentas/reset?rut=' + encodeURIComponent(rut))
-                .then(r => r.text())
-                .then(t => alert(t));
-        }
-    </script>
+    <script src="/js/cuentas_editar.js"></script>

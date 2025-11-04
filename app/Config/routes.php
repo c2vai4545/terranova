@@ -37,13 +37,13 @@ return [
     'POST /micuenta' => [UsuarioController::class, 'miCuenta'],
 
     // API para app móvil
-    'POST /api/login' => [AuthApiController::class, 'login'],
-    'POST /api/logout' => [AuthApiController::class, 'logout'],
-    'GET /api/me' => [AuthApiController::class, 'me'],
-    'GET /api/monitor' => [MonitorController::class, 'ajaxApi'],
-    'POST /api/ingesta' => [MonitorController::class, 'ingesta'],
-    'POST /api/change-password' => [AuthApiController::class, 'changePassword'],
-    'GET /api/historico' => [HistoricoController::class, 'api'],
-    'GET /api/soporte/mis' => [SoporteController::class, 'misTicketsApi'],
-    'POST /api/soporte/new' => [SoporteController::class, 'crearApi'],
+    'POST /api/v1/login' => [AuthApiController::class, 'login'],
+    'POST /api/v1/logout' => [AuthApiController::class, 'logout'],
+    'GET /api/v1/me' => [AuthApiController::class, 'me'],
+    'GET /api/v1/monitor' => [MonitorController::class, 'ajaxApi'],
+    'POST /api/v1/ingesta' => [MonitorController::class, 'ingesta'],
+    'POST /api/v1/change-password' => [AuthApiController::class, 'changePassword'],
+    'GET /api/v1/historico' => [HistoricoController::class, 'api'],
+    'GET /api/v1/soporte/mis' => [SoporteController::class, 'misTicketsApi'],
+    'POST /api/v1/soporte/new' => [SoporteController::class, 'crearApi'],
 ];

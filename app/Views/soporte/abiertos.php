@@ -16,7 +16,7 @@
                     <td><?php echo htmlspecialchars($ticket['fechaCreacion']); ?></td>
                     <td><?php echo htmlspecialchars($ticket['creador']); ?></td>
                     <td class="text-center">
-                        <input type="radio" name="ticket" value="<?php echo (int)$ticket['id']; ?>" onclick="mostrarProblema(<?php echo (int)$ticket['id']; ?>)">
+                        <input type="radio" name="ticket" value="<?php echo (int)$ticket['id']; ?>">
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -26,42 +26,12 @@
             <label for="respuesta">Respuesta:</label>
             <textarea id="respuesta" name="respuesta" rows="4" maxlength="500" class="form-control"></textarea>
             <br>
-            <button class="btn btn-dark" onclick="cerrarTicket()">Cerrar Ticket</button>
+            <button class="btn btn-dark" id="cerrar-ticket-btn">Cerrar Ticket</button>
         </div>
     </div>
     <br>
     <div>
-        <button class="btn btn-secondary" onclick="location.href='/admin'">Volver</button>
+        <button class="btn btn-secondary" id="volver-btn">Volver</button>
     </div>
 </div>
-<script>
-    function mostrarProblema(id) {
-        fetch('/soporte/problema?id=' + id)
-            .then(r => r.text())
-            .then(t => {
-                document.getElementById('problema').innerText = t;
-                document.getElementById('respuesta-form').style.display = 'block';
-            });
-    }
-
-    function cerrarTicket() {
-        const id = document.querySelector('input[name="ticket"]:checked').value;
-        const respuesta = document.getElementById('respuesta').value;
-        if (!respuesta.trim()) {
-            alert('La respuesta no puede estar vacía.');
-            return;
-        }
-        fetch('/soporte/cerrar', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `id=${id}&respuesta=${encodeURIComponent(respuesta)}`
-            })
-            .then(r => r.text())
-            .then(t => {
-                alert(t);
-                location.reload();
-            });
-    }
-</script>
+<script src="/js/soporte_abiertos.js"></script>

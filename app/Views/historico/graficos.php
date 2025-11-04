@@ -1,5 +1,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <?php if (!empty($lecturas)): ?>
+    <div id="lecturas-data" data-lecturas="<?php echo htmlspecialchars(json_encode($lecturas), ENT_QUOTES, 'UTF-8'); ?>"></div>
     <?php foreach ($lecturas as $index => $lectura): ?>
         <h3 class="text-center"><?php echo htmlspecialchars($lectura['tipoNombre']); ?></h3>
         <div class="row">
@@ -27,33 +28,6 @@
                 </table>
             </div>
         </div>
-        <script>
-            (function() {
-                const ctx = document.getElementById('grafico_<?php echo $index; ?>').getContext('2d');
-                const labels = [<?php echo implode(',', array_map(fn($d) => '"' . $d['fechaLectura'] . ' ' . $d['horaLectura'] . '"', $lectura['data'])); ?>];
-                const dataVals = [<?php echo implode(',', array_map(fn($d) => (string)$d['lectura'], $lectura['data'])); ?>];
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: '<?php echo htmlspecialchars($lectura['tipoNombre']); ?>',
-                            data: dataVals,
-                            backgroundColor: 'transparent',
-                            borderColor: '#3c763d',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            })();
-        </script>
         <br />
     <?php endforeach; ?>
 <?php endif; ?>
@@ -62,3 +36,4 @@
     <br />
     <br />
 </div>
+<script src="/js/historico_graficos.js"></script>

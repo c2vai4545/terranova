@@ -18,12 +18,12 @@
                     <td><?php echo !empty($ticket['solucionador']) ? htmlspecialchars($ticket['solucionador']) : 'Sin Asignar'; ?></td>
                     <td><?php echo !empty($ticket['respuesta']) ? 'Solucionado' : 'Pendiente'; ?></td>
                     <td>
-                        <input type="radio" name="ticket" value="<?php echo (int)$ticket['id']; ?>" onclick="mostrarRespuesta(<?php echo (int)$ticket['id']; ?>)">
+                        <input type="radio" name="ticket" value="<?php echo (int)$ticket['id']; ?>">
                     </td>
                 </tr>
             <?php endforeach; ?>
         </table>
-        <div id="respuesta-form" style="display:none;">
+        <div id="respuesta-form">
             <label class="fw-bold">Problema:</label>
             <div id="problema-label"></div>
             <br>
@@ -32,14 +32,11 @@
         </div>
     </div>
     <br>
-    <button class="btn btn-secondary" onclick="location.href='/worker'">Volver</button>
+    <button class="btn btn-secondary" id="volver-btn">Volver</button>
 </div>
-<script>
-    function mostrarRespuesta(id) {
-        fetch('/soporte/respuesta?id=' + id).then(r => r.json()).then(d => {
-            document.getElementById('problema-label').innerText = d.problema || '';
-            document.getElementById('respuesta-label').innerText = d.respuesta ? `${d.respuesta} - ${d.fechaRespuesta} - ${d.solucionador}` : 'Sin Asignar';
-            document.getElementById('respuesta-form').style.display = 'block';
-        });
+<style>
+    #respuesta-form {
+        display: none;
     }
-</script>
+</style>
+<script src="/js/soporte.js"></script>

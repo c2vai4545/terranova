@@ -16,6 +16,14 @@ session_set_cookie_params([
 ]);
 session_start();
 
+// Encabezados de seguridad
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+// Content-Security-Policy (CSP) - Ajustar según las necesidades de la aplicación
+// Ejemplo básico: permite recursos del mismo origen y algunos CDNs
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com /js/cuentas_crear.js; style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://cdn.jsdelivr.net;");
+
 define('BASE_PATH', dirname(__DIR__));
 
 require BASE_PATH . '/app/Config/config.php';
@@ -56,11 +64,26 @@ function jsonResponse(array $payload, int $status = 200): void
 {
     http_response_code($status);
     header('Content-Type: application/json');
+
+    $responsePayload = $payload;
+
+    // Check if the payload indicates an error and reformat it for consistency
+    if (isset($payload['error'])) {
+        $responsePayload = [
+            'status' => 'error',
+            'message' => $payload['error']
+        ];
+    }
+
     // CORS sólo para API
     if (isApiRequest()) {
-        sendCorsHeaders();
+        header('Access-Control-Allow-Origin: *'); // TODO: Configurar para dominios específicos en producción
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Content-Type, Authorization');
+        header('Access-Control-Allow-Credentials: true');
     }
-    echo json_encode($payload);
+    echo json_encode($responsePayload);
+    exit();
 }
 
 function redirect(string $path): void
@@ -83,19 +106,16 @@ function isApiRequest(): bool
     return strpos($path, '/api/') === 0;
 }
 
-function sendCorsHeaders(): void
-{
-    $origin = $_SERVER['HTTP_ORIGIN'] ?? '*';
-    header('Access-Control-Allow-Origin: ' . $origin);
-    header('Vary: Origin');
-    header('Access-Control-Allow-Credentials: true');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, X-Session-Id, X-Api-Key');
-    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-}
+// function sendCorsHeaders(): void
+// {
+//     header('Access-Control-Allow-Origin: *');
+//     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+//     header('Access-Control-Allow-Headers: Content-Type, Authorization');
+// }
 
 // Responder preflight para API
 if ($method === 'OPTIONS' && isApiRequest()) {
-    sendCorsHeaders();
+    // sendCorsHeaders(); // Eliminado, la lógica CORS ahora está en jsonResponse
     http_response_code(204);
     exit();
 }

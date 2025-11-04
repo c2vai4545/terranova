@@ -1,0 +1,295 @@
+openapi: 3.1.0
+info:
+  title: Terranova API
+  version: 1.0.0
+  description: API para la aplicación Terranova, incluyendo autenticación, monitoreo y soporte.
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Servidor de desarrollo local
+paths:
+  /login:
+    post:
+      summary: Iniciar sesión de usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid credentials
+  /logout:
+    post:
+      summary: Cerrar sesión de usuario
+      responses:
+        '200':
+          description: Sesión cerrada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Logout successful
+  /me:
+    get:
+      summary: Obtener información del usuario autenticado
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Información del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  role:
+                    type: string
+        '401':
+          description: No autenticado
+  /monitor:
+    get:
+      summary: Obtener datos del monitor
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Datos del monitor obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    timestamp:
+                      type: string
+                      format: date-time
+                    value:
+                      type: number
+        '401':
+          description: No autenticado
+  /ingesta:
+    post:
+      summary: Ingestar nuevos datos de monitorización
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: number
+                  format: float
+                  example: 25.5
+      responses:
+        '200':
+          description: Datos ingestados exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Data ingested successfully
+        '401':
+          description: No autenticado
+        '429':
+          description: Demasiadas solicitudes (Rate Limit Exceeded)
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+                format: int32
+              description: Segundos antes de reintentar
+  /change-password:
+    post:
+      summary: Cambiar la contraseña del usuario autenticado
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  example: oldpassword123
+                new_password:
+                  type: string
+                  example: newpassword123
+      responses:
+        '200':
+          description: Contraseña cambiada exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password changed successfully
+        '401':
+          description: No autenticado o contraseña antigua incorrecta
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid old password
+  /historico:
+    get:
+      summary: Obtener datos históricos
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      parameters:
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date
+          required: true
+          description: Fecha de inicio (YYYY-MM-DD)
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date
+          required: true
+          description: Fecha de fin (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Datos históricos obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      format: date
+                    value:
+                      type: number
+        '401':
+          description: No autenticado
+  /soporte/mis:
+    get:
+      summary: Obtener mis tickets de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Tickets de soporte obtenidos exitosamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    subject:
+                      type: string
+                    status:
+                      type: string
+        '401':
+          description: No autenticado
+  /soporte/new:
+    post:
+      summary: Crear un nuevo ticket de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject:
+                  type: string
+                  example: Problema con el monitor
+                description:
+                  type: string
+                  example: El monitor no muestra datos.
+      responses:
+        '200':
+          description: Ticket de soporte creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ticket created successfully
+        '401':
+          description: No autenticado
+components:
+  securitySchemes:
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: PHPSESSID
+    XSessionId:
+      type: apiKey
+      in: header
+      name: X-Session-Id
