@@ -5,13 +5,23 @@ class JwtMiddleware
     public static function requireAuth(): void
     {
         $token = null;
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-        if ($authHeader === '' && function_exists('getallheaders')) {
-            $headers = getallheaders();
-            if (isset($headers['Authorization'])) {
-                $authHeader = $headers['Authorization'];
+
+        // Obtener el header Authorization de la forma más robusta posible
+        $authHeader = '';
+        if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        } elseif (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            // Algunos servidores (por ejemplo Nginx + PHP-FPM) lo exponen así
+            $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        } elseif (function_exists('getallheaders')) {
+            foreach (getallheaders() as $name => $value) {
+                if (strcasecmp($name, 'Authorization') === 0) {
+                    $authHeader = $value;
+                    break;
+                }
             }
         }
+
         if (str_starts_with($authHeader, 'Bearer ')) {
             $token = trim(substr($authHeader, 7));
         } elseif (isset($_COOKIE['jwt'])) {
