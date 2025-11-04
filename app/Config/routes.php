@@ -46,4 +46,5 @@ return [
     'GET /api/v1/historico' => [HistoricoController::class, 'api'],
     'GET /api/v1/soporte/mis' => [SoporteController::class, 'misTicketsApi'],
     'POST /api/v1/soporte/new' => [SoporteController::class, 'crearApi'],
+    'POST /api/v1/cuentas/desactivar' => [AuthApiController::class, 'deactivateUser'],
 ];

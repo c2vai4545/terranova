@@ -17,7 +17,7 @@
                     <td><?php echo htmlspecialchars($usuario['rut']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['nombre1']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['apellido1']); ?></td>
-                    <td><?php echo htmlspecialchars((string)$usuario['idPerfil']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['nombrePerfil']); ?></td>
                     <td class="text-center">
                         <input type="radio" name="usuario" value="<?php echo htmlspecialchars($usuario['rut']); ?>">
                     </td>
@@ -30,7 +30,7 @@
 
         <div id="formulario-edicion" style="display:none;">
             <h2>Editar Usuario</h2>
-            <form method="POST" action="/cuentas/editar">
+            <form method="POST" action="/cuentas/editar" id="form-editar-usuario">
                 <input type="hidden" id="rut" name="rut">
                 <div class="row mb-2">
                     <label class="col-2">Nombre 1:</label>
@@ -58,7 +58,7 @@
             </form>
         </div>
         <br>
-        <a href="/admin" class="btn btn-secondary">Volver</a>
+        <a href="/cuentas" class="btn btn-secondary">Volver</a>
     </div>
 
     <script src="/js/cuentas_editar.js"></script>

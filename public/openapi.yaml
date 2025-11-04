@@ -17,9 +17,9 @@ paths:
             schema:
               type: object
               properties:
-                username:
-                  type: string
-                  example: user@example.com
+                rut:
+                  type: integer
+                  example: 22222222
                 password:
                   type: string
                   example: password123
@@ -189,6 +189,81 @@ paths:
                   message:
                     type: string
                     example: Invalid old password
+  /cuentas/desactivar:
+    post:
+      summary: Desactivar una cuenta de usuario (cambiar idPerfil a 3)
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  description: RUT del usuario a desactivar (8 o 9 dígitos)
+                  example: 12345678
+      responses:
+        '200':
+          description: Usuario desactivado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Usuario desactivado correctamente
+        '400':
+          description: RUT inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: rut_invalido
+                  details:
+                    type: object
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (solo administradores o no puedes desactivarte a ti mismo)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: no_puedes_desactivarte_a_ti_mismo
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: usuario_no_encontrado
+        '500':
+          description: Error interno del servidor al desactivar el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: error_al_desactivar_usuario
   /historico:
     get:
       summary: Obtener datos históricos

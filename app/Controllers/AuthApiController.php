@@ -67,4 +67,27 @@ class AuthApiController
         $stmt->execute([':p' => $hash, ':rut' => $_SESSION['rut']]);
         jsonResponse(['ok' => true]);
     }
+
+    public function deactivateUser(): void
+    {
+        ApiSessionMiddleware::requireAuth();
+        $body = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+        $schema = [
+            'rut' => ['required' => true, 'type' => 'int', 'min' => 1000000, 'max' => 99999999],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($body, $schema);
+        if (!$ok) {
+            jsonResponse(['error' => 'rut_invalido', 'details' => $errors], 400);
+            return;
+        }
+        $rut = (int)$clean['rut'];
+
+        $updated = UsuarioModel::deactivate($rut, 3); // 3 es un ejemplo, ajusta según tu lógica de perfiles
+
+        if ($updated) {
+            jsonResponse(['ok' => true, 'message' => 'Usuario desactivado correctamente.']);
+        } else {
+            jsonResponse(['error' => 'no_se_pudo_desactivar_usuario'], 500);
+        }
+    }
 }

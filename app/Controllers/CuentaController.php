@@ -4,7 +4,7 @@ class CuentaController
     public function menu(): void
     {
         RoleMiddleware::require([1]);
-        $usuarios = UsuarioModel::listAll();
+        $usuarios = UsuarioModel::listActiveUsers();
         view('cuentas/menu', ['usuarios' => $usuarios]);
     }
 
@@ -67,8 +67,12 @@ class CuentaController
         ];
         [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
         if (!$ok) {
-            $usuarios = UsuarioModel::listAll();
-            view('cuentas/editar', ['usuarios' => $usuarios, 'error' => implode(', ', $errors)]);
+            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
+                jsonResponse(['success' => false, 'message' => 'Error de validación', 'errors' => $errors], 400);
+            } else {
+                $usuarios = UsuarioModel::listAll();
+                view('cuentas/editar', ['usuarios' => $usuarios, 'error' => implode(', ', $errors)]);
+            }
             return;
         }
         $u = [
@@ -79,8 +83,10 @@ class CuentaController
             'apellido2' => $_POST['apellido2'] ?? null,
             'idPerfil' => (int)$clean['idPerfil'],
         ];
+        error_log("Datos de usuario para actualizar: " . print_r($u, true));
         UsuarioModel::update($u);
-        redirect('/cuentas/editar');
+
+        jsonResponse(['success' => true, 'message' => 'Usuario actualizado exitosamente.']);
     }
 
     public function obtenerUsuario(): void

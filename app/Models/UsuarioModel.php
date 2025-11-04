@@ -77,7 +77,25 @@ class UsuarioModel
     public static function listAll(): array
     {
         $pdo = Database::pdo();
-        $stmt = $pdo->query('SELECT rut, nombre1, nombre2, apellido1, apellido2, idPerfil FROM Usuario');
+        $stmt = $pdo->query('SELECT u.rut, u.nombre1, u.nombre2, u.apellido1, u.apellido2, u.idPerfil, p.nombrePerfil FROM Usuario u JOIN Perfil p ON u.idPerfil = p.idPerfil');
         return $stmt->fetchAll();
+    }
+
+    public static function listActiveUsers(): array
+    {
+        $pdo = Database::pdo();
+        $stmt = $pdo->query('SELECT u.rut, u.nombre1, u.nombre2, u.apellido1, u.apellido2, u.idPerfil, p.nombrePerfil FROM Usuario u JOIN Perfil p ON u.idPerfil = p.idPerfil WHERE u.idPerfil != 3');
+        return $stmt->fetchAll();
+    }
+
+    public static function deactivate(int $rut, int $idPerfil): bool
+    {
+        $pdo = Database::pdo();
+        $stmt = $pdo->prepare('UPDATE Usuario SET idPerfil = :idPerfil WHERE rut = :rut');
+        $stmt->execute([
+            ':idPerfil' => $idPerfil,
+            ':rut' => $rut,
+        ]);
+        return $stmt->rowCount() > 0;
     }
 }

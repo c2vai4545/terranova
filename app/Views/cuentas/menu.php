@@ -26,7 +26,7 @@
                                 <tr>
                                     <td><?= $usuario['rut'] ?></td>
                                     <td><?= $usuario['nombre1'] ?> <?= $usuario['apellido1'] ?></td>
-                                    <td><?= $usuario['idPerfil'] ?></td>
+                                    <td><?= $usuario['nombrePerfil'] ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

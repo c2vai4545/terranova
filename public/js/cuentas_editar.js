@@ -41,4 +41,41 @@ document.addEventListener('DOMContentLoaded', function() {
             resetearContrasena(rut);
         });
     });
+
+    document.getElementById('form-editar-usuario').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevenir el envío por defecto del formulario
+
+        const rut = document.getElementById('rut').value;
+        const nombre1 = document.getElementById('nombre1').value;
+        const nombre2 = document.getElementById('nombre2').value;
+        const apellido1 = document.getElementById('apellido1').value;
+        const apellido2 = document.getElementById('apellido2').value;
+        const idPerfil = document.getElementById('perfil').value;
+
+        const formData = new FormData();
+        formData.append('rut', rut);
+        formData.append('nombre1', nombre1);
+        formData.append('nombre2', nombre2);
+        formData.append('apellido1', apellido1);
+        formData.append('apellido2', apellido2);
+        formData.append('idPerfil', idPerfil);
+
+        fetch('/cuentas/editar', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Ha ocurrido un error desconocido.'));
+            }
+        })
+        .catch(error => {
+            console.error('Error al actualizar el usuario:', error);
+            alert('Error al actualizar el usuario.');
+        });
+    });
 });
