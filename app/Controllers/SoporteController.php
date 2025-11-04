@@ -9,10 +9,7 @@ class SoporteController
 
     public function listarAbiertos(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') {
-            redirect('/');
-        }
+        RoleMiddleware::require([1]);
         $tickets = TicketSoporteModel::listAbiertos();
         view('soporte/abiertos', ['tickets' => $tickets]);
     }
@@ -27,18 +24,19 @@ class SoporteController
 
     public function cerrar(): void
     {
-        AuthMiddleware::requireAuth();
-        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') {
-            http_response_code(403);
-            echo 'Acceso denegado';
-            return;
-        }
-        $id = (int)($_POST['id'] ?? 0);
-        $respuesta = trim($_POST['respuesta'] ?? '');
-        if ($id <= 0 || $respuesta === '') {
+        RoleMiddleware::require([1]);
+        $schema = [
+            'id' => ['required' => true, 'type' => 'int', 'min' => 1],
+            'respuesta' => ['required' => true, 'min' => 1],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
+        if (!$ok) {
             echo 'Error: Los campos son obligatorios';
             return;
         }
+        $id = $clean['id'];
+        $respuesta = $clean['respuesta'];
+
         TicketSoporteModel::cerrar($id, $respuesta, (string)$_SESSION['rut']);
         echo 'Ticket cerrado exitosamente';
     }
@@ -52,11 +50,16 @@ class SoporteController
     public function crear(): void
     {
         AuthMiddleware::requireAuth();
-        $problema = trim($_POST['problema'] ?? '');
-        if ($problema === '') {
+        $schema = [
+            'problema' => ['required' => true, 'min' => 1],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
+        if (!$ok) {
             view('soporte/crear', ['error' => 'El campo problema es obligatorio']);
             return;
         }
+        $problema = $clean['problema'];
+
         TicketSoporteModel::crear($problema, (string)$_SESSION['rut']);
         redirect('/soporte');
     }
