@@ -4,6 +4,10 @@ class HistoricoController
     public function filtros(): void
     {
         AuthMiddleware::requireAuth();
+        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') {
+            redirect('/');
+        }
+
         $tipos = TipoLecturaModel::listAll();
         view('historico/filtros', ['tipos' => $tipos]);
     }
@@ -11,6 +15,10 @@ class HistoricoController
     public function graficos(): void
     {
         AuthMiddleware::requireAuth();
+        if ((string)($_SESSION['idPerfil'] ?? '') !== '1') {
+            redirect('/');
+        }
+
         $fechaInicio = $_POST['fechaInicio'] ?? '';
         $fechaFin = $_POST['fechaFin'] ?? '';
         $tipos = $_POST['tiposLectura'] ?? [];
