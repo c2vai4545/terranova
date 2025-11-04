@@ -33,13 +33,17 @@ function requireDirectory(string $directory): void
     if (!is_dir($directory)) {
         return;
     }
-    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+    // Añadir bandera SKIP_DOTS para evitar procesar directorios . y ..
+    $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS));
     foreach ($iterator as $file) {
         if ($file->isFile() && substr($file->getFilename(), -4) === '.php') {
             require_once $file->getPathname();
         }
     }
 }
+
+// Cargar AuthApiController.php explícitamente para asegurar que esté disponible
+require_once BASE_PATH . '/app/Controllers/AuthApiController.php';
 
 requireDirectory(BASE_PATH . '/app/Models');
 requireDirectory(BASE_PATH . '/app/Services');
