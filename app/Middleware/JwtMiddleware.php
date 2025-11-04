@@ -6,6 +6,12 @@ class JwtMiddleware
     {
         $token = null;
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        if ($authHeader === '' && function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+            }
+        }
         if (str_starts_with($authHeader, 'Bearer ')) {
             $token = trim(substr($authHeader, 7));
         } elseif (isset($_COOKIE['jwt'])) {
