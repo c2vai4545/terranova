@@ -10,8 +10,18 @@ class UsuarioController
     public function miCuenta(): void
     {
         AuthMiddleware::requireAuth();
-        $nueva = $_POST['nuevaContrasena'] ?? '';
-        $repetir = $_POST['repetirContrasena'] ?? '';
+        $schema = [
+            'nuevaContrasena' => ['required' => true, 'min' => 1],
+            'repetirContrasena' => ['required' => true, 'min' => 1],
+        ];
+        [$ok, $clean, $errors] = Validator::validate($_POST, $schema);
+        if (!$ok) {
+            view('usuario/mi_cuenta', ['mensaje' => implode(', ', $errors)]);
+            return;
+        }
+        $nueva = $clean['nuevaContrasena'];
+        $repetir = $clean['repetirContrasena'];
+
         if ($nueva !== $repetir) {
             view('usuario/mi_cuenta', ['mensaje' => 'Las contraseñas no coinciden']);
             return;
@@ -38,7 +48,7 @@ class UsuarioController
             $hash = password_hash($nueva, PASSWORD_BCRYPT);
             $stmt = $pdo->prepare('UPDATE Usuario SET contraseña = :p WHERE rut = :rut');
             $stmt->execute([':p' => $hash, ':rut' => $usuario['rut']]);
-            redirect('/logout');
+            redirect('/');
         } else {
             view('usuario/mi_cuenta', ['mensaje' => 'Usuario no encontrado']);
         }

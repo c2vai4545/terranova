@@ -1,5 +1,7 @@
 <div class="wrapper">
     <h1 class="text-center">Crear Cuenta</h1>
+    <div id="error-alert" class="alert alert-danger" role="alert" style="display:none;"></div>
+    <div id="success-alert" class="alert alert-success" role="alert" style="display:none;"></div>
     <div class="card">
         <form method="POST" action="/cuentas/crear">
             <div class="row mb-2">
@@ -25,7 +27,7 @@
             <div class="row mb-3">
                 <label class="col-sm-5">Perfil:</label>
                 <div class="col-sm-6">
-                    <select name="perfil" class="form-select" required>
+                    <select name="idPerfil" class="form-select" required>
                         <option value="">Seleccionar Perfil</option>
                         <?php foreach ($perfiles as $perfil): ?>
                             <option value="<?php echo htmlspecialchars($perfil['idPerfil']); ?>"><?php echo htmlspecialchars($perfil['nombrePerfil']); ?></option>
@@ -41,3 +43,4 @@
         </form>
     </div>
 </div>
+<script src="/js/cuentas_crear.js"></script>

@@ -17,12 +17,12 @@
                     <td><?php echo htmlspecialchars($usuario['rut']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['nombre1']); ?></td>
                     <td><?php echo htmlspecialchars($usuario['apellido1']); ?></td>
-                    <td><?php echo htmlspecialchars((string)$usuario['idPerfil']); ?></td>
+                    <td><?php echo htmlspecialchars($usuario['nombrePerfil']); ?></td>
                     <td class="text-center">
-                        <input type="radio" name="usuario" value="<?php echo htmlspecialchars($usuario['rut']); ?>" onclick="mostrarFormulario('<?php echo htmlspecialchars($usuario['rut']); ?>')">
+                        <input type="radio" name="usuario" value="<?php echo htmlspecialchars($usuario['rut']); ?>">
                     </td>
                     <td>
-                        <button class="btn btn-dark" onclick="resetearContrasena('<?php echo htmlspecialchars($usuario['rut']); ?>')">Resetear Contraseña</button>
+                        <button class="btn btn-dark reset-password-btn" data-rut="<?php echo htmlspecialchars($usuario['rut']); ?>">Resetear Contraseña</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -30,7 +30,7 @@
 
         <div id="formulario-edicion" style="display:none;">
             <h2>Editar Usuario</h2>
-            <form method="POST" action="/cuentas/editar">
+            <form method="POST" action="/cuentas/editar" id="form-editar-usuario">
                 <input type="hidden" id="rut" name="rut">
                 <div class="row mb-2">
                     <label class="col-2">Nombre 1:</label>
@@ -58,37 +58,7 @@
             </form>
         </div>
         <br>
-        <a href="/admin" class="btn btn-secondary">Volver</a>
+        <a href="/cuentas" class="btn btn-secondary">Volver</a>
     </div>
 
-    <script>
-        function mostrarFormulario(rut) {
-            fetch('/cuentas/usuario?rut=' + encodeURIComponent(rut))
-                .then(r => r.json())
-                .then(d => {
-                    const u = d.usuario,
-                        perfiles = d.perfiles;
-                    document.getElementById('rut').value = u.rut;
-                    document.getElementById('nombre1').value = u.nombre1 || '';
-                    document.getElementById('nombre2').value = u.nombre2 || '';
-                    document.getElementById('apellido1').value = u.apellido1 || '';
-                    document.getElementById('apellido2').value = u.apellido2 || '';
-                    const select = document.getElementById('perfil');
-                    select.innerHTML = '';
-                    perfiles.forEach(p => {
-                        const opt = document.createElement('option');
-                        opt.value = p.idPerfil;
-                        opt.text = p.nombrePerfil;
-                        select.appendChild(opt);
-                    });
-                    select.value = u.idPerfil;
-                    document.getElementById('formulario-edicion').style.display = 'block';
-                });
-        }
-
-        function resetearContrasena(rut) {
-            fetch('/cuentas/reset?rut=' + encodeURIComponent(rut))
-                .then(r => r.text())
-                .then(t => alert(t));
-        }
-    </script>
+    <script src="/js/cuentas_editar.js"></script>
