@@ -9,8 +9,8 @@ return [
         'pass' => 'CONTRASENA DE HOST QUITADO POR SEGURIDAD',
         'charset' => 'utf8mb4',
     ],
-    'api' => [
-        // Clave de ejemplo; en entornos reales definir en config.local.php
-        'ingesta_key' => 'CAMBIAR_ESTA_CLAVE',
+    'jwt' => [
+        // Cambiar en producción y mover a config.local.php
+        'secret' => 'CAMBIAR_ESTA_CLAVE_JWT',
     ],
 ];

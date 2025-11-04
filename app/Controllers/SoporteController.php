@@ -88,7 +88,7 @@ class SoporteController
     // API para app móvil: obtener mis tickets
     public function misTicketsApi(): void
     {
-        ApiSessionMiddleware::requireAuth();
+        JwtMiddleware::requireAuth();
         $tickets = TicketSoporteModel::listByCreador((string)$_SESSION['rut']);
 
         $formattedTickets = [];

@@ -34,6 +34,24 @@ class AuthController
         }
         $_SESSION['rut'] = $auth['rut'];
         $_SESSION['idPerfil'] = (string)$auth['idPerfil'];
+
+        // Generar y almacenar JWT para uso unificado
+        $token = TokenService::generate([
+            'rut' => $auth['rut'],
+            'idPerfil' => (int)$auth['idPerfil'],
+        ]);
+
+        // Enviar JWT en cookie (para vistas web) y en header opcional
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['SERVER_PORT'] ?? '') == 443);
+        setcookie('jwt', $token, [
+            'expires' => 0,
+            'path' => '/',
+            'secure' => $isSecure,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+        header('Authorization: Bearer ' . $token);
+
         if ((string)$auth['idPerfil'] === '1') {
             redirect('/admin');
         } elseif ((string)$auth['idPerfil'] === '2') {
@@ -47,6 +65,8 @@ class AuthController
     {
         session_unset();
         session_destroy();
+        // Borrar cookie JWT
+        setcookie('jwt', '', time() - 3600, '/', '', true, true);
         redirect('/');
     }
 }

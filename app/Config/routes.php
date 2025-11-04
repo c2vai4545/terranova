@@ -3,7 +3,7 @@ return [
     'GET /' => [AuthController::class, 'landing'],
     'GET /login' => [AuthController::class, 'showLogin'],
     'POST /login' => [AuthController::class, 'login'],
-    'GET /logout' => [AuthController::class, 'logout'],
+    'POST /logout' => [AuthController::class, 'logout'],
 
     'GET /admin' => [DashboardController::class, 'admin'],
     'GET /worker' => [DashboardController::class, 'worker'],
@@ -31,7 +31,7 @@ return [
     'POST /cuentas/editar' => [CuentaController::class, 'editar'],
     'GET /cuentas/usuario' => [CuentaController::class, 'obtenerUsuario'],
     'POST /cuentas/guardar' => [CuentaController::class, 'guardarEdicion'],
-    'GET /cuentas/reset' => [CuentaController::class, 'resetearContrasena'],
+    'POST /cuentas/reset' => [CuentaController::class, 'resetearContrasena'],
 
     'GET /micuenta' => [UsuarioController::class, 'miCuentaForm'],
     'POST /micuenta' => [UsuarioController::class, 'miCuenta'],

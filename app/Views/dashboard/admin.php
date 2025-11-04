@@ -17,7 +17,9 @@
         </ul>
         <img src="/imgs/inv.png" width="350" height="350" class="rounded mx-auto d-block">
         <div class="text-center mt-3">
-            <a href="/logout" class="btn btn-secondary">Cerrar sesión</a>
+            <form action="/logout" method="POST" style="display:inline;">
+    <button type="submit" class="btn btn-secondary">Cerrar sesión</button>
+</form>
         </div>
     </div>
 </div>

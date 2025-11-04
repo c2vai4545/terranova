@@ -4,5 +4,5 @@ vendor/
 node_modules/
 *.log
 
-mobile.md
+# mobile.md
 /.idx/*
