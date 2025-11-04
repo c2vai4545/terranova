@@ -88,7 +88,7 @@ class SoporteController
     // API para app móvil: obtener mis tickets
     public function misTicketsApi(): void
     {
-        ApiSessionMiddleware::requireAuth();
+        JwtMiddleware::requireAuth();
         $tickets = TicketSoporteModel::listByCreador((string)$_SESSION['rut']);
 
         $formattedTickets = [];
@@ -107,5 +107,26 @@ class SoporteController
         }
 
         jsonResponse(['tickets' => $formattedTickets]);
+    }
+
+    // API para app móvil: crear nuevo ticket
+    public function crearApi(): void
+    {
+        ApiSessionMiddleware::requireAuth();
+
+        $body = json_decode(file_get_contents('php://input'), true) ?? $_POST;
+        $problema = trim($body['problema'] ?? '');
+
+        if ($problema === '') {
+            jsonResponse(['error' => 'El campo problema es obligatorio'], 400);
+            return;
+        }
+
+        try {
+            TicketSoporteModel::crear($problema, (string)$_SESSION['rut']);
+            jsonResponse(['ok' => true, 'message' => 'Ticket creado exitosamente']);
+        } catch (Throwable $e) {
+            jsonResponse(['error' => 'Error al crear el ticket: ' . $e->getMessage()], 500);
+        }
     }
 }

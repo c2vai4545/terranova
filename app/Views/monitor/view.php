@@ -32,7 +32,9 @@
         <?php } elseif ((string)($_SESSION['idPerfil'] ?? '') === '2') { ?>
             <a href="/worker" class="btn btn-dark btn-primario">Volver</a>
         <?php } ?>
-        <a href="/logout" class="btn btn-secondary ml-2">Cerrar sesión</a>
+        <form action="/logout" method="POST" style="display:inline;">
+    <button type="submit" class="btn btn-secondary ml-2">Cerrar sesión</button>
+</form>
     </div>
 </div>
 <script>

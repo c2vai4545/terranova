@@ -26,7 +26,7 @@ class MonitorController
     // Variante API: responde 401 JSON si no hay sesión
     public function ajaxApi(): void
     {
-        ApiSessionMiddleware::requireAuth();
+        JwtMiddleware::requireAuth();
         $row = TemporalModel::getLatest();
         if ($row) {
             jsonResponse([
@@ -41,8 +41,8 @@ class MonitorController
 
     public function ingesta(): void
     {
-        // Requerir sesión y permiso de usuario para ingresar lecturas
-        ApiSessionMiddleware::requireAuth();
+        // Requerir autenticación por JWT
+        JwtMiddleware::requireAuth();
         $idPerfil = isset($_SESSION['idPerfil']) ? (int)$_SESSION['idPerfil'] : null;
         // Política: solo Trabajador (idPerfil = 2) puede ingresar lecturas manuales
         if ($idPerfil !== 2) {
