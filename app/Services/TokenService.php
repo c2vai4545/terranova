@@ -63,10 +63,19 @@ class TokenService
 
     private static function secret(): string
     {
+        // 1) Variable de entorno (ideal para Koyeb y cualquier PaaS)
+        $env = getenv('JWT_SECRET');
+        if ($env !== false && $env !== '') {
+            return $env;
+        }
+
+        // 2) Archivos de configuración locales
         $cfg = require __DIR__ . '/../Config/config.php';
-        if (isset($cfg['jwt']['secret'])) {
+        if (isset($cfg['jwt']['secret']) && $cfg['jwt']['secret'] !== '') {
             return $cfg['jwt']['secret'];
         }
+
+        // 3) Valor por defecto (no usar en producción)
         return 'CAMBIAR_ESTA_CLAVE_JWT';
     }
 }
