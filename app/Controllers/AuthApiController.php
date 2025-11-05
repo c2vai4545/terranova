@@ -474,17 +474,27 @@ class AuthApiController
         $input = json_decode(file_get_contents('php://input'), true);
 
         $fechaInicio = $input['fechaInicio'] ?? '';
-        $fechaFin = $input['fechaFin'] ?? '';
-        $tipos = $input['tiposLectura'] ?? [];
+        $fechaFin = $input['end'] ?? '';
+        $tipos = $input['tipos'] ?? [];
 
-        $lecturas = LecturaModel::getByTipoAndRango($tipos, $fechaInicio, $fechaFin);
-
-        $tiposMap = [];
-        foreach (TipoLecturaModel::listAll() as $t) {
-            $tiposMap[(int)$t['idTipoLectura']] = $t['nombre'];
+        $series = [];
+        foreach ($tipos as $idTipoLectura) {
+            $data = LecturaModel::getByTipoAndRango((int)$idTipoLectura, $fechaInicio, $fechaFin);
+            $formattedData = [];
+            foreach ($data as $lectura) {
+                $formattedData[] = [
+                    'lectura' => (float)$lectura['lectura'],
+                    'fechaLectura' => $lectura['fechaLectura'],
+                    'horaLectura' => $lectura['horaLectura']
+                ];
+            }
+            $series[] = [
+                'idTipoLectura' => (int)$idTipoLectura,
+                'data' => $formattedData
+            ];
         }
 
-        echo json_encode(['success' => true, 'lecturas' => $lecturas, 'tiposMap' => $tiposMap]);
+        echo json_encode(['series' => $series]);
     }
 
     public function soporteMenuApi(): void
