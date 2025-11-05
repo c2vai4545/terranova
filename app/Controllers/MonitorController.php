@@ -27,20 +27,20 @@ class MonitorController
     }
 
     // Variante API: responde 401 JSON si no hay sesión
-    public function ajaxApi(): void
-    {
-        JwtMiddleware::requireAuth();
-        $row = TemporalModel::getLatest();
-        if ($row) {
-            jsonResponse([
-                'temperatura' => $row['temperatura'],
-                'humedadAire' => $row['humedadAire'],
-                'humedadSuelo' => $row['humedadSuelo'],
-            ]);
-        } else {
-            jsonResponse(['temperatura' => null, 'humedadAire' => null, 'humedadSuelo' => null]);
-        }
-    }
+    // public function ajaxApi(): void
+    // {
+    //     JwtMiddleware::requireAuth();
+    //     $row = TemporalModel::getLatest();
+    //     if ($row) {
+    //         jsonResponse([
+    //             'temperatura' => $row['temperatura'],
+    //             'humedadAire' => $row['humedadAire'],
+    //             'humedadSuelo' => $row['humedadSuelo'],
+    //         ]);
+    //     } else {
+    //         jsonResponse(['temperatura' => null, 'humedadAire' => null, 'humedadSuelo' => null]);
+    //     }
+    // }
 
     public function ingesta(): void
     {

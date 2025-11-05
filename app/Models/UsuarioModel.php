@@ -36,7 +36,7 @@ class UsuarioModel
         return (bool) $stmt->fetch();
     }
 
-    public static function insert(array $u): void
+    public static function insert(array $u): bool
     {
         $pdo = Database::pdo();
         $hash = password_hash($u['contraseña'], PASSWORD_BCRYPT);
@@ -50,9 +50,10 @@ class UsuarioModel
             ':perfil' => $u['idPerfil'],
             ':pass' => $hash,
         ]);
+        return $stmt->rowCount() > 0;
     }
 
-    public static function update(array $u): void
+    public static function update(array $u): bool
     {
         $pdo = Database::pdo();
         $stmt = $pdo->prepare('UPDATE Usuario SET nombre1 = :n1, nombre2 = :n2, apellido1 = :a1, apellido2 = :a2, idPerfil = :perfil WHERE rut = :rut');
@@ -64,14 +65,16 @@ class UsuarioModel
             ':a2' => $u['apellido2'] ?? null,
             ':perfil' => $u['idPerfil'],
         ]);
+        return $stmt->rowCount() > 0;
     }
 
-    public static function resetPassword(string $rut, string $newPassword = 'Terranova.2023'): void
+    public static function resetPassword(string $rut, string $newPassword = 'Terranova.2023'): bool
     {
         $pdo = Database::pdo();
         $hash = password_hash($newPassword, PASSWORD_BCRYPT);
         $stmt = $pdo->prepare('UPDATE Usuario SET contraseña = :pass WHERE rut = :rut');
         $stmt->execute([':pass' => $hash, ':rut' => $rut]);
+        return $stmt->rowCount() > 0;
     }
 
     public static function listAll(): array
@@ -96,6 +99,23 @@ class UsuarioModel
             ':idPerfil' => $idPerfil,
             ':rut' => $rut,
         ]);
+        return $stmt->rowCount() > 0;
+    }
+
+    public static function getById(int $idUsuario): ?array
+    {
+        $pdo = Database::pdo();
+        $stmt = $pdo->prepare('SELECT * FROM Usuario WHERE idUsuario = :idUsuario');
+        $stmt->execute([':idUsuario' => $idUsuario]);
+        $row = $stmt->fetch();
+        return $row ?: null;
+    }
+
+    public static function actualizarContrasena(string $rut, string $hashedPassword): bool
+    {
+        $pdo = Database::pdo();
+        $stmt = $pdo->prepare('UPDATE Usuario SET contraseña = :pass WHERE rut = :rut');
+        $stmt->execute([':pass' => $hashedPassword, ':rut' => $rut]);
         return $stmt->rowCount() > 0;
     }
 }
