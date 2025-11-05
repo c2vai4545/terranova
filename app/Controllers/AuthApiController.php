@@ -473,7 +473,7 @@ class AuthApiController
 
         $input = json_decode(file_get_contents('php://input'), true);
 
-        $fechaInicio = $input['fechaInicio'] ?? '';
+        $fechaInicio = $input['start'] ?? '';
         $fechaFin = $input['end'] ?? '';
         $tipos = $input['tipos'] ?? [];
 
