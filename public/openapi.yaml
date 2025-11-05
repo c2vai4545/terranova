@@ -264,6 +264,553 @@ paths:
                   error:
                     type: string
                     example: error_al_desactivar_usuario
+  /register:
+    post:
+      summary: Registrar un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 33333333
+                password:
+                  type: string
+                  example: newpassword123
+                email:
+                  type: string
+                  example: user@example.com
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+        '400':
+          description: Datos de registro inválidos
+  /forgot-password:
+    post:
+      summary: Solicitar restablecimiento de contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 22222222
+      responses:
+        '200':
+          description: Instrucciones de restablecimiento enviadas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Reset instructions sent
+        '404':
+          description: Usuario no encontrado
+  /reset-password:
+    post:
+      summary: Restablecer contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 22222222
+                token:
+                  type: string
+                  example: reset_token_123
+                new_password:
+                  type: string
+                  example: resetpassword123
+      responses:
+        '200':
+          description: Contraseña restablecida exitosamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password reset successfully
+        '400':
+          description: Token inválido o expirado
+  /cuentas/activar:
+    post:
+      summary: Activar una cuenta de usuario (cambiar idPerfil a 1)
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 12345678
+      responses:
+        '200':
+          description: Usuario activado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Usuario activado correctamente
+        '400':
+          description: RUT inválido
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (solo administradores)
+        '404':
+          description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: usuario_no_encontrado
+        '500':
+          description: Error interno del servidor al desactivar el usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: error_al_desactivar_usuario
+  /cuentas/editar:
+    get:
+      summary: Mostrar formulario para editar cuenta de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Formulario de edición de cuenta
+        '401':
+          description: No autenticado
+    post:
+      summary: Editar cuenta de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 12345678
+                nombre:
+                  type: string
+                  example: Nuevo Nombre
+                email:
+                  type: string
+                  example: nuevo@email.com
+      responses:
+        '200':
+          description: Cuenta editada correctamente
+        '401':
+          description: No autenticado
+  /cuentas/crear:
+    get:
+      summary: Mostrar formulario para crear cuenta de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Formulario de creación de cuenta
+        '401':
+          description: No autenticado
+    post:
+      summary: Crear nueva cuenta de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rut:
+                  type: integer
+                  example: 12345678
+                nombre:
+                  type: string
+                  example: Nuevo Usuario
+                email:
+                  type: string
+                  example: nuevo@usuario.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Cuenta creada correctamente
+        '401':
+          description: No autenticado
+  /cuentas/usuario/{id}:
+    get:
+      summary: Obtener información de un usuario por ID
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del usuario
+      responses:
+        '200':
+          description: Información del usuario
+        '401':
+          description: No autenticado
+        '404':
+          description: Usuario no encontrado
+  /cuentas/guardar:
+    post:
+      summary: Guardar edición de cuenta de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                nombre:
+                  type: string
+                  example: Nombre Actualizado
+                email:
+                  type: string
+                  example: actualizado@email.com
+      responses:
+        '200':
+          description: Edición guardada correctamente
+        '401':
+          description: No autenticado
+  /cuentas/reset:
+    post:
+      summary: Resetear contraseña de usuario
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+                new_password:
+                  type: string
+                  example: newpassword123
+      responses:
+        '200':
+          description: Contraseña reseteada correctamente
+        '401':
+          description: No autenticado
+  /soporte/admin:
+    get:
+      summary: Obtener tickets de soporte para administradores
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Tickets de soporte para administradores
+        '401':
+          description: No autenticado
+  /soporte/problema/{id}:
+    get:
+      summary: Obtener problema de soporte por ID
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID del problema de soporte
+      responses:
+        '200':
+          description: Problema de soporte
+        '401':
+          description: No autenticado
+        '404':
+          description: Problema no encontrado
+  /soporte/cerrar:
+    post:
+      summary: Cerrar ticket de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 1
+      responses:
+        '200':
+          description: Ticket cerrado correctamente
+        '401':
+          description: No autenticado
+  /soporte/respuesta/{id}:
+    get:
+      summary: Obtener respuesta de ticket de soporte por ID
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: ID de la respuesta del ticket de soporte
+      responses:
+        '200':
+          description: Respuesta del ticket de soporte
+        '401':
+          description: No autenticado
+        '404':
+          description: Respuesta no encontrada
+  /soporte/crear:
+    get:
+      summary: Mostrar formulario para crear ticket de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Formulario de creación de ticket de soporte
+        '401':
+          description: No autenticado
+    post:
+      summary: Crear nuevo ticket de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject:
+                  type: string
+                  example: Problema con el monitor
+                description:
+                  type: string
+                  example: El monitor no muestra datos.
+      responses:
+        '200':
+          description: Ticket de soporte creado exitosamente
+        '401':
+          description: No autenticado
+  /micuenta:
+    get:
+      summary: Obtener información de mi cuenta
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Información de mi cuenta
+        '401':
+          description: No autenticado
+    post:
+      summary: Actualizar información de mi cuenta
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Mi Nuevo Nombre
+                email:
+                  type: string
+                  example: mi.nuevo@email.com
+      responses:
+        '200':
+          description: Información de cuenta actualizada
+        '401':
+          description: No autenticado
+  /admin:
+    get:
+      summary: Acceder al panel de administración
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Panel de administración
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (no es administrador)
+  /worker:
+    get:
+      summary: Acceder al panel de trabajador
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Panel de trabajador
+        '401':
+          description: No autenticado
+        '403':
+          description: No autorizado (no es trabajador)
+  /historico/graficos:
+    post:
+      summary: Obtener datos para gráficos históricos
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                  format: date
+                  example: 2023-01-01
+                end_date:
+                  type: string
+                  format: date
+                  example: 2023-01-31
+      responses:
+        '200':
+          description: Datos para gráficos históricos
+        '401':
+          description: No autenticado
+  /soporte:
+    get:
+      summary: Menú de soporte
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Menú de soporte
+        '401':
+          description: No autenticado
+  /cuentas:
+    get:
+      summary: Menú de cuentas
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Menú de cuentas
+        '401':
+          description: No autenticado
+  /landing:
+    get:
+      summary: Página de aterrizaje
+      responses:
+        '200':
+          description: Página de aterrizaje
+  /monitor/view:
+    get:
+      summary: Ver monitor
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Vista del monitor
+        '401':
+          description: No autenticado
+  /monitor/data:
+    get:
+      summary: Obtener datos del monitor
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Datos del monitor
+        '401':
+          description: No autenticado
+  /historico/filtros:
+    get:
+      summary: Obtener filtros históricos
+      security:
+        - CookieAuth: []
+        - XSessionId: []
+      responses:
+        '200':
+          description: Filtros históricos
+        '401':
+          description: No autenticado
   /historico:
     get:
       summary: Obtener datos históricos
@@ -300,62 +847,6 @@ paths:
                       format: date
                     value:
                       type: number
-        '401':
-          description: No autenticado
-  /soporte/mis:
-    get:
-      summary: Obtener mis tickets de soporte
-      security:
-        - CookieAuth: []
-        - XSessionId: []
-      responses:
-        '200':
-          description: Tickets de soporte obtenidos exitosamente
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    subject:
-                      type: string
-                    status:
-                      type: string
-        '401':
-          description: No autenticado
-  /soporte/new:
-    post:
-      summary: Crear un nuevo ticket de soporte
-      security:
-        - CookieAuth: []
-        - XSessionId: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                subject:
-                  type: string
-                  example: Problema con el monitor
-                description:
-                  type: string
-                  example: El monitor no muestra datos.
-      responses:
-        '200':
-          description: Ticket de soporte creado exitosamente
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Ticket created successfully
         '401':
           description: No autenticado
 components:
