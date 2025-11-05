@@ -737,17 +737,53 @@ paths:
             schema:
               type: object
               properties:
-                start_date:
+                start:
                   type: string
                   format: date
                   example: 2023-01-01
-                end_date:
+                end:
                   type: string
                   format: date
                   example: 2023-01-31
+                tipos:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
       responses:
         '200':
           description: Datos para gráficos históricos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  series:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        idTipoLectura:
+                          type: integer
+                          description: ID del tipo de lectura
+                          example: 1
+                        data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              lectura:
+                                type: number
+                                format: float
+                                example: 25.5
+                              fechaLectura:
+                                type: string
+                                format: date
+                                example: 2025-10-01
+                              horaLectura:
+                                type: string
+                                format: time
+                                example: "10:00:00"
         '401':
           description: No autenticado
   /soporte:
